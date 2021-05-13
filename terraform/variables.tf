@@ -1,6 +1,6 @@
 variable "k3d_cluster_name" {
-  default = ["k3d"]
-  type    = list(string)
+  default = "k3d"
+  type    = string
 }
 
 variable "k3d_cluster_port" {
