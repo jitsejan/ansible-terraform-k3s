@@ -5,9 +5,10 @@
   vars:
     brew_cask_packages:
       - docker
+      - multipass
     brew_packages:
       - helm@3
-      - k3d
+      - k3sup
       - kubectl
       - terraform
     install_homebrew_if_missing: false
