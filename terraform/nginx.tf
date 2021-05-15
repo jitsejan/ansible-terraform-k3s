@@ -3,81 +3,84 @@ resource "kubernetes_namespace" "test" {
     name = "nginx"
   }
 }
-resource "kubernetes_deployment" "test" {
+resource "kubernetes_ingress" "example_ingress" {
   metadata {
-    name      = "nginx"
+    name      = "example-ingress"
     namespace = kubernetes_namespace.test.metadata.0.name
   }
+
   spec {
-    replicas = 2
-    selector {
-      match_labels = {
-        app = "MyTestApp"
-      }
+    backend {
+      service_name = "app1"
+      service_port = 8080
     }
-    template {
-      metadata {
-        labels = {
-          app = "MyTestApp"
-        }
-      }
-      spec {
-        container {
-          image = "nginx"
-          name  = "nginx-container"
-          port {
-            container_port = 80
-          }
-        }
-      }
-    }
-  }
-}
-resource "kubernetes_service" "test" {
-  metadata {
-    name      = "nginx-service"
-    namespace = kubernetes_namespace.test.metadata.0.name
-  }
-  spec {
-    selector = {
-      app = kubernetes_deployment.test.spec.0.template.0.metadata.0.labels.app
-    }
-    port {
-      port        = 80
-      target_port = 80
-      protocol    = "TCP"
-    }
-  }
-}
-resource "kubernetes_ingress" "test" {
-  wait_for_load_balancer = true
-  metadata {
-    name      = "test"
-    namespace = kubernetes_namespace.test.metadata.0.name
-    annotations = {
-      "kubernetes.io/ingress.class" = "traefik"
-    }
-  }
-  spec {
+
     rule {
       http {
         path {
-          path = "/"
           backend {
-            service_name = kubernetes_service.test.metadata.0.name
-            service_port = 80
+            service_name = "app1"
+            service_port = 8080
           }
+
+          path = "/app1/*"
         }
+
+        path {
+          backend {
+            service_name = "app2"
+            service_port = 8080
+          }
+
+          path = "/app2/*"
+        }
+      }
+    }
+
+    tls {
+      secret_name = "tls-secret"
+    }
+  }
+}
+
+resource "kubernetes_pod" "example" {
+  metadata {
+    name      = "terraform-example"
+    namespace = kubernetes_namespace.test.metadata.0.name
+    labels = {
+      app = "MyApp1"
+    }
+  }
+
+  spec {
+    container {
+      image = "nginx:1.7.9"
+      name  = "example"
+
+      port {
+        container_port = 8080
       }
     }
   }
 }
-# Display load balancer hostname (typically present in AWS)
-output "load_balancer_hostname" {
-  value = kubernetes_ingress.test.status.0.load_balancer.0.ingress.0.hostname
-}
 
-# Display load balancer IP (typically present in GCP, or using Nginx ingress controller)
-output "load_balancer_ip" {
-  value = kubernetes_ingress.test.status.0.load_balancer.0.ingress.0.ip
+resource "kubernetes_pod" "example2" {
+  metadata {
+    name      = "terraform-example2"
+    namespace = kubernetes_namespace.test.metadata.0.name
+    labels = {
+      app = "MyApp2"
+    }
+  }
+
+  spec {
+    container {
+      image = "nginx:1.7.9"
+      name  = "example"
+
+      port {
+        container_port = 8080
+      }
+    }
+  }
 }
