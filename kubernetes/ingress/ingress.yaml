@@ -16,13 +16,6 @@ spec:
                 name: nginx-service
                 port:
                   number: 80
-          - path: /echo2
-            pathType: Prefix
-            backend:
-              service:
-                name: echo2
-                port:
-                  number: 80
           - path: /whoami
             pathType: Prefix
             backend:
