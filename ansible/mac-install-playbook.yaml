@@ -66,7 +66,7 @@
       when: homebrew_check.stat.exists
 
     - name: Check if machines already exist
-      command: multipass info mario | grep Running
+      shell: multipass info mario | grep "Running"
       register: multipass_check
       ignore_errors: true
       changed_when: false
@@ -89,12 +89,43 @@
       command: k3sup install --ip {{ master_ip }} --user jitsejan --context k3s-context
       changed_when: false
 
-    - name: Deploy something
+    - name: Deploy K3s on the nodes
       include_tasks: deploy-nodes.yaml
       loop: "{{ vm_names }}"
       vars:
         master: "{{ master_ip }}"
 
-    - name: Check kubectl
-      command: kubectl get nodes -o wide
-      changed_when: false
+    - name: Create the echo deployment
+      community.kubernetes.k8s:
+        state: present
+        src: ../kubernetes/ingress/echo-deployment.yaml
+
+    - name: Create the echo service
+      community.kubernetes.k8s:
+        state: present
+        src: ../kubernetes/ingress/echo-service.yaml
+
+    - name: Create the Nginx deployment
+      community.kubernetes.k8s:
+        state: present
+        src: ../kubernetes/ingress/nginx-deployment.yaml
+
+    - name: Create the Nginx service
+      community.kubernetes.k8s:
+        state: present
+        src: ../kubernetes/ingress/nginx-service.yaml
+
+    - name: Create the whoami deployment
+      community.kubernetes.k8s:
+        state: present
+        src: ../kubernetes/ingress/whoami-deployment.yaml
+
+    - name: Create the whoami service
+      community.kubernetes.k8s:
+        state: present
+        src: ../kubernetes/ingress/whoami-service.yaml
+
+    - name: Create the ingress
+      community.kubernetes.k8s:
+        state: present
+        src: ../kubernetes/ingress/ingress.yaml
