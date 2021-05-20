@@ -1,0 +1,9 @@
+---
+- name: Get node IP
+  shell: set -o pipefail && multipass list --format csv | grep {{ item }} | awk -F "\"*,\"*" '{print $3}'
+  register: node_ip
+  when: item != "mario"
+
+- name: Join cluster
+  command: k3sup join --ip {{ node_ip.stdout }} --server-ip {{ master_ip }} --user jitsejan
+  when: item != "mario"
