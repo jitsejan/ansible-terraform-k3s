@@ -5,6 +5,11 @@
   vars:
     state: present
   tasks:
+    - name: Create the nginx deployment
+      community.kubernetes.k8s:
+        state: "{{ state }}"
+        src: ../kubernetes/examples/nginx.yaml
+
     - name: Create the whoami deployment
       community.kubernetes.k8s:
         state: "{{ state }}"
