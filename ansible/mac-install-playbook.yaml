@@ -15,7 +15,7 @@
     upgrade_homebrew_packages: false
     vm_names:
       - mario
-      - luigi
+      # - luigi
 
   pre_tasks:
     - name: Ensuring Homebrew is installed
@@ -94,38 +94,3 @@
       loop: "{{ vm_names }}"
       vars:
         master: "{{ master_ip }}"
-
-    - name: Create the echo deployment
-      community.kubernetes.k8s:
-        state: present
-        src: ../kubernetes/ingress/echo-deployment.yaml
-
-    - name: Create the echo service
-      community.kubernetes.k8s:
-        state: present
-        src: ../kubernetes/ingress/echo-service.yaml
-
-    - name: Create the Nginx deployment
-      community.kubernetes.k8s:
-        state: present
-        src: ../kubernetes/ingress/nginx-deployment.yaml
-
-    - name: Create the Nginx service
-      community.kubernetes.k8s:
-        state: present
-        src: ../kubernetes/ingress/nginx-service.yaml
-
-    - name: Create the whoami deployment
-      community.kubernetes.k8s:
-        state: present
-        src: ../kubernetes/ingress/whoami-deployment.yaml
-
-    - name: Create the whoami service
-      community.kubernetes.k8s:
-        state: present
-        src: ../kubernetes/ingress/whoami-service.yaml
-
-    - name: Create the ingress
-      community.kubernetes.k8s:
-        state: present
-        src: ../kubernetes/ingress/ingress.yaml

@@ -1,0 +1,16 @@
+---
+- name: Install Kubernetes
+  hosts: localhost
+  become: false
+  vars:
+    state: present
+  tasks:
+    - name: Create the whoami deployment
+      community.kubernetes.k8s:
+        state: "{{ state }}"
+        src: ../kubernetes/examples/whoami.yaml
+
+    - name: Create the echo deployment
+      community.kubernetes.k8s:
+        state: "{{ state }}"
+        src: ../kubernetes/examples/echo.yaml

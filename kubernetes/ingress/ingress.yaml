@@ -2,6 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  namespace: kube-system
   name: traefik-ingress
   annotations:
     kubernetes.io/ingress.class: "traefik"
