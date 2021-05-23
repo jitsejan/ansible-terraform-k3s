@@ -1,10 +1,9 @@
 ---
-- name: Install MacOS packages
+- name: Provision MacOS
   hosts: localhost
   become: false
   vars:
     brew_cask_packages:
-      - docker
       - multipass
     brew_packages:
       - helm@3
