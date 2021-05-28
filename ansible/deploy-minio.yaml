@@ -1,0 +1,11 @@
+---
+- name: Install Minio
+  hosts: localhost
+  become: false
+  vars:
+    helm_chart_url: "https://operator.min.io/"
+  tasks:
+    - name: Create the Minio deployment
+      community.kubernetes.k8s:
+        state: present
+        src: ../kubernetes/minio/deploy.yaml
