@@ -3,6 +3,11 @@
   hosts: localhost
   become: false
   tasks:
+    - name: Creates Minio data directory
+      file:
+        path: /mnt/minio
+        state: directory
+
     - name: Create the Minio deployment
       community.kubernetes.k8s:
         state: present
