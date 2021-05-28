@@ -1,0 +1,9 @@
+---
+- name: Install Minio
+  hosts: localhost
+  become: false
+  tasks:
+    - name: Create the Minio deployment
+      community.kubernetes.k8s:
+        state: present
+        src: ../kubernetes/minio/deploy.yaml
