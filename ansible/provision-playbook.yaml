@@ -1,0 +1,14 @@
+---
+- name: Provision Playbook
+  hosts: localhost
+  become: false
+  vars:
+    vm_names:
+      - mario
+      # - luigi
+  roles:
+    - homebrew
+    - multipass
+    - k3s
+    - minio
+    - validate

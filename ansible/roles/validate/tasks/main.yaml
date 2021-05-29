@@ -1,0 +1,33 @@
+---
+- name: Create the whoami deployment
+  community.kubernetes.k8s:
+    state: present
+    src: "{{ whoami_manifest }}"
+
+- name: Create the echo deployment
+  community.kubernetes.k8s:
+    state: present
+    src: "{{ echo_manifest }}"
+
+- name: Create the Nginx deployment
+  community.kubernetes.k8s:
+    state: present
+    src: "{{ nginx_manifest }}"
+
+- name: "Wait for whoami to come up"
+  uri:
+    url: "{{ whoami_url }}"
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 60
+  delay: 1
+
+- name: "Wait for echo to come up"
+  uri:
+    url: "{{ echo_url }}"
+    return_content: true
+  register: result
+  until: "'echo-one' in result.content"
+  retries: 10
+  delay: 1

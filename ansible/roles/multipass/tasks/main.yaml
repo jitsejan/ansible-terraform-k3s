@@ -1,0 +1,19 @@
+- name: Check if machines already exist
+  shell: multipass info mario | grep "Running"
+  register: multipass_check
+  ignore_errors: true
+  changed_when: false
+
+- name: Creating virtual machines
+  command: "multipass launch ubuntu --name {{ item }} --cloud-init={{ init_file }}"
+  with_items: "{{ vm_names }}"
+  when: multipass_check.rc == 1
+
+- name: Get master IP
+  shell: set -o pipefail && multipass info mario | grep IPv4 | awk '{print $2}'
+  register: get_master_ip
+  changed_when: false
+
+- name: Set master IP
+  set_fact:
+    master_ip: "{{ get_master_ip.stdout }}"

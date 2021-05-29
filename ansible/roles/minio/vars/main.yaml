@@ -1,0 +1,2 @@
+deployment_file: "../kubernetes/minio/deploy.yaml"
+minio_path: "/mnt/minio"
