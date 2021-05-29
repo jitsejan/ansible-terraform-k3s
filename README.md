@@ -14,8 +14,8 @@ This repository contains the code to provision Kubernetes on a local Macbook as 
 ## Sources
 
 - [k3s-ansible](https://github.com/k3s-io/k3s-ansible)
-- [ansible-k3d](https://github.com/andrewrothstein/ansible-k3d)
 - [pre-commit for Ansible](https://ansible-lint.readthedocs.io/en/latest/configuring.html)
+- [persistent volume storage](https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/)
 
 ## Known issues
 

@@ -5,7 +5,7 @@
   changed_when: false
 
 - name: Creating virtual machines
-  command: "multipass launch ubuntu --name {{ item }} --cloud-init={{ init_file }}"
+  command: "multipass launch {{ ubuntu_version }} --name {{ item }} --cloud-init={{ init_file }}"
   with_items: "{{ vm_names }}"
   when: multipass_check.rc == 1
 

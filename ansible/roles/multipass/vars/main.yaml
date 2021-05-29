@@ -1,1 +1,2 @@
-init_file: "../cloud-init.yaml"
+init_file: "cloud-init.yaml"
+ubuntu_version: "ubuntu"
