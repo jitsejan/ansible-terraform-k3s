@@ -1,0 +1,4 @@
+- name: Create the deployment
+  community.kubernetes.k8s:
+    state: present
+    src: "{{ deployment_file }}"

@@ -1,0 +1,9 @@
+- name: Install K3s on master
+  command: k3sup install --ip {{ master_ip }} --user {{ username }} --context k3s-context
+  changed_when: false
+
+- name: Deploy K3s on the nodes
+  include_tasks: deploy-nodes.yaml
+  loop: "{{ vm_names }}"
+  vars:
+    master: "{{ master_ip }}"
