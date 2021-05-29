@@ -11,8 +11,3 @@ repos:
         description: This hook runs ansible-lint.
         entry: ansible-lint --force-color
         files: \.(yaml|yml)$
-  - repo: https://github.com/gruntwork-io/pre-commit
-    rev: v0.1.12
-    hooks:
-      - id: terraform-fmt
-      - id: terraform-validate

@@ -1,9 +1,8 @@
-# ansible-terraform-k3s
+# kubernetes-data-platform
 
 ## Description
 
-- k3d
-- k3s
+This repository contains the code to provision Kubernetes on a local Macbook as well as a Ubuntu VPS through Ansible with the lightweight K3s Kubernetes tool.
 
 ## Getting started
 
@@ -11,15 +10,13 @@
 
 #### Installing Ansible
 
-### Terraform
-
-#### Installing Terraform
 
 ## Sources
 
 - [k3s-ansible](https://github.com/k3s-io/k3s-ansible)
 - [ansible-k3d](https://github.com/andrewrothstein/ansible-k3d)
-- [terraform](https://learn.hashicorp.com/tutorials/terraform/kubernetes-provider?in=terraform/kubernetes)
-- [creating-your-first-kubernetes-resources](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/guides/getting-started#creating-your-first-kubernetes-resources)
-- [pre-commit for Terraform](https://github.com/gruntwork-io/pre-commit)
 - [pre-commit for Ansible](https://ansible-lint.readthedocs.io/en/latest/configuring.html)
+
+## Known issues
+
+- Be aware that Mac does not support the K3s ingress when using the Docker version. I am using `multipass` to create virtual machines where I can install Kubernetes with `k3s`. Using KinD (Kubernetes In Docker) will stop ingress to work since networking is not allowed.
