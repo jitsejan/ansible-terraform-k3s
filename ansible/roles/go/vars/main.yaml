@@ -1,0 +1,5 @@
+---
+go:
+  pkgs:
+    - github.com/cloudflare/cfssl/cmd/cfssl
+    - github.com/cloudflare/cfssl/cmd/cfssljson

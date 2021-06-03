@@ -7,8 +7,10 @@
       - mario
       # - luigi
   roles:
-    - homebrew
-    - multipass
-    - k3s
-    - minio
-    - validate
+    # - homebrew
+    # - go
+    - consul
+    # - multipass
+    # - k3s
+    # - minio
+    # - validate

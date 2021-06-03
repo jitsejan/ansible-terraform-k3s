@@ -1,0 +1,23 @@
+---
+- name: Install Go packages
+  command: "go get -u {{ item }}"
+  args:
+    # Trim trailing '/...'
+    creates: '{{ lookup("env", "GOPATH") }}/src/{{ item | regex_replace("/\.\.\.$", "") }}'
+  with_items: "{{ go.pkgs }}"
+  tags: go-pkg-install
+
+- name: Modify .zshrc with Go variables
+  blockinfile:
+    dest: "~/.zshrc"
+    block: |
+      export GOPATH=$HOME/go
+      export GOBIN=$GOPATH/bin
+      export PATH=$GOBIN:$PATH
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - changes for golang"
+    insertafter: EOF
+    create: true
+
+- name: Source .zshrc
+  command: . ~/.zshrc
+  changed_when: false
