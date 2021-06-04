@@ -16,6 +16,9 @@ This repository contains the code to provision Kubernetes on a local Macbook as 
 - [k3s-ansible](https://github.com/k3s-io/k3s-ansible)
 - [pre-commit for Ansible](https://ansible-lint.readthedocs.io/en/latest/configuring.html)
 - [persistent volume storage](https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/)
+- https://testdriven.io/blog/running-vault-and-consul-on-kubernetes/
+- https://multipass.run/docs/launch-command
+- https://docs.ansible.com/ansible/latest/collections/community/kubernetes/helm_module.html
 
 ## Known issues
 

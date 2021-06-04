@@ -1,5 +1,1 @@
-consul_path: roles/consul/files/
-config_name: consul
-secret_name: consul
-service_name: consul
-namespace: default
+consul_ingress: "../kubernetes/consul/ingress.yaml"

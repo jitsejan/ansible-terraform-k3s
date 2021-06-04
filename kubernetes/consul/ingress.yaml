@@ -1,0 +1,19 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: consul
+  name: consul-ingress
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /consul
+            pathType: Prefix
+            backend:
+              service:
+                name: consul-ui
+                port:
+                  name: http

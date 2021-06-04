@@ -9,8 +9,8 @@
   roles:
     # - homebrew
     # - go
-    - consul
     # - multipass
     # - k3s
     # - minio
     # - validate
+    - consul

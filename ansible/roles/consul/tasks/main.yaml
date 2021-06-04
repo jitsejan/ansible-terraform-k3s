@@ -1,92 +1,16 @@
-- name: Create a Certificate Authority
-  shell: set -o pipefail && cfssl gencert -initca {{ consul_path }}certs/config/ca-csr.json | cfssljson -bare {{ consul_path }}certs/ca
-  changed_when: false
+- name: Add Hashicorp chart repo
+  community.kubernetes.helm_repository:
+    name: hashicorp
+    repo_url: "https://helm.releases.hashicorp.com"
 
-- name: Create a private key and a TLS certificate for Consul
-  command: |
-    cfssl gencert \
-    -ca={{ consul_path }}certs/ca.pem \
-    -ca-key={{ consul_path }}certs/ca-key.pem \
-    -config={{ consul_path }}certs/config/ca-config.json \
-    -profile=default \
-    {{ consul_path }}certs/config/consul-csr.json | cfssljson -bare {{ consul_path }}/certs/consul
-  changed_when: false
-
-- name: Create a private key and a TLS certificate for Vault
-  command: |
-    cfssl gencert \
-    -ca={{ consul_path }}certs/ca.pem \
-    -ca-key={{ consul_path }}certs/ca-key.pem \
-    -config={{ consul_path }}certs/config/ca-config.json \
-    -profile=default \
-    {{ consul_path }}certs/config/vault-csr.json | cfssljson -bare {{ consul_path }}/certs/vault
-  changed_when: false
-
-- name: Generate consul key
-  shell: set -o pipefail && consul keygen | base64
-  register: consul_key
-  changed_when: false
-
-- name: Set consul_key
-  set_fact:
-    consul_key: "{{ consul_key.stdout }}"
-
-- name: Modify .zshrc with Gossip Encryption Key
-  blockinfile:
-    dest: "~/.zshrc"
-    block: |
-      export GOSSIP_ENCRYPTION_KEY={{ consul_key | b64decode }}
-    marker: "# {mark} ANSIBLE MANAGED BLOCK - changes for consul"
-    insertafter: EOF
-    create: true
-
-- name: Get ca.pem content
-  shell: set -o pipefail && cat {{ consul_path }}certs/ca.pem | base64
-  register: ca_pem
-  changed_when: false
-
-- name: Set ca_pem
-  set_fact:
-    ca_pem: "{{ ca_pem.stdout }}"
-
-- name: Get consul.pem content
-  shell: set -o pipefail && cat {{ consul_path }}certs/consul.pem | base64
-  register: consul_pem
-  changed_when: false
-
-- name: Set consul_pem
-  set_fact:
-    consul_pem: "{{ consul_pem.stdout }}"
-
-- name: Get consul-key.pem content
-  shell: set -o pipefail && cat {{ consul_path }}certs/consul-key.pem | base64
-  register: consul_key_pem
-  changed_when: false
-
-- name: Set consul_key_pem
-  set_fact:
-    consul_key_pem: "{{ consul_key_pem.stdout }}"
-
-- name: Deploy the Consul secret to Kubernetes
-  community.kubernetes.k8s:
-    state: present
-    template:
-      path: "../kubernetes/consul/secret.yaml.j2"
-
-- name: Deploy the Consul configmap to Kubernetes
-  community.kubernetes.k8s:
-    state: present
-    template:
-      path: "../kubernetes/consul/configmap.yaml.j2"
-
-- name: Deploy the headless Consul service to Kubernetes
-  community.kubernetes.k8s:
-    state: present
-    template:
-      path: "../kubernetes/consul/service.yaml.j2"
-
-- name: Deploy the Consul statefulset to Kubernetes
-  community.kubernetes.k8s:
-    state: present
-    template:
-      path: "../kubernetes/consul/statefulset.yaml.j2"
+- name: Deploy Consul chart
+  community.kubernetes.helm:
+    name: consul
+    chart_ref: hashicorp/consul
+    create_namespace: true
+    release_namespace: consul
+    values: "{{ lookup('file', '../kubernetes/consul/config.yaml') | from_yaml }}"
+# - name: Create the Consul ingress
+#   community.kubernetes.k8s:
+#     state: present
+#     src: "{{ consul_ingress }}"
