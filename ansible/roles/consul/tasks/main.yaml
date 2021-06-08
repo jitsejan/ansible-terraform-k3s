@@ -10,7 +10,3 @@
     create_namespace: true
     release_namespace: consul
     values: "{{ lookup('file', '../kubernetes/consul/config.yaml') | from_yaml }}"
-# - name: Create the Consul ingress
-#   community.kubernetes.k8s:
-#     state: present
-#     src: "{{ consul_ingress }}"

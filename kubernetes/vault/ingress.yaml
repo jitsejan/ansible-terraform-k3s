@@ -2,18 +2,19 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  namespace: consul
-  name: consul-ingress
+  namespace: vault
+  name: vault-ingress
   annotations:
     kubernetes.io/ingress.class: traefik
 spec:
   rules:
-    - http:
+    - host: vault.localhost
+      http:
         paths:
-          - path: /consul
+          - path: /
             pathType: Prefix
             backend:
               service:
-                name: consul-ui
+                name: vault
                 port:
                   name: http

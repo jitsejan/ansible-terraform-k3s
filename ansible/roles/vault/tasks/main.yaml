@@ -1,0 +1,54 @@
+- name: Add Hashicorp chart repo
+  community.kubernetes.helm_repository:
+    name: hashicorp
+    repo_url: "https://helm.releases.hashicorp.com"
+
+- name: Deploy Vault chart
+  community.kubernetes.helm:
+    name: vault
+    chart_ref: hashicorp/vault
+    chart_version: 0.12.0
+    create_namespace: true
+    release_namespace: vault
+    values: "{{ lookup('file', '../kubernetes/vault/config.yaml') | from_yaml }}"
+
+- name: Create the ingress
+  community.kubernetes.k8s:
+    state: present
+    src: "{{ vault_ingress }}"
+
+- name: Check status of init for Vault
+  shell: set -o pipefail && kubectl exec vault-0 -n vault -- vault operator init -status
+  register: init_check
+  changed_when: false
+
+- name: Init and get the cluster keys
+  shell: set -o pipefail && kubectl exec vault-0 -n vault -- vault operator init -key-shares=1 -key-threshold=1 -format=json > cluster-keys.json
+  when: init_check.rc == 2
+
+- name: Unseal the nodes
+  shell: set -o pipefail && kubectl exec {{ item }} -n vault -- vault operator unseal $(cat cluster-keys.json | jq -r ".unseal_keys_b64[]")
+  with_items:
+    - vault-0
+    - vault-1
+    - vault-2
+  changed_when: false
+
+- name: Authenticate Vault
+  shell: set -o pipefail && kubectl exec vault-0 -n vault -- vault login $(cat cluster-keys.json | jq -r ".root_token")
+  changed_when: false
+
+- name: Check if already enabled
+  shell: set -o pipefail && kubectl exec vault-0 -n vault -- vault auth list | grep userpass
+  register: userpass_check
+  ignore_errors: true
+  changed_when: false
+
+- name: Enable userpass login
+  command: kubectl exec vault-0 -n vault -- vault auth enable userpass
+  when: userpass_check.rc == 1
+  changed_when: false
+
+- name: Add user to Vault and make admin
+  command: kubectl exec vault-0 -n vault -- vault write auth/userpass/users/{{ user_name }} password={{ user_password }} policies=admins
+  changed_when: false

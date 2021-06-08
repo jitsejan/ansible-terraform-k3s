@@ -1,0 +1,1 @@
+vault_ingress: "../kubernetes/vault/ingress.yaml"
