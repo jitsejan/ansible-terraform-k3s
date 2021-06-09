@@ -1,1 +1,6 @@
-vault_ingress: "../kubernetes/vault/ingress.yaml"
+policy_name: jjpolicy
+policy_path: policy.hcl
+secret_user: secret/data/webapp/config:username
+target_path: /home/vault/policy.hcl
+vault_host: http://vault.localhost
+vault_ingress: ../kubernetes/vault/ingress.yaml

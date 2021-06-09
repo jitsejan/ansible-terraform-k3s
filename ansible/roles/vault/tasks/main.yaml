@@ -38,7 +38,21 @@
   shell: set -o pipefail && kubectl exec vault-0 -n vault -- vault login $(cat cluster-keys.json | jq -r ".root_token")
   changed_when: false
 
-- name: Check if already enabled
+- name: Check if kv-v2 is already enabled
+  shell: set -o pipefail && kubectl exec vault-0 -n vault -- vault secrets list | grep kv
+  register: kv_check
+  ignore_errors: true
+  changed_when: false
+
+- name: Enable kv-v2 secrets
+  shell: set -o pipefail && kubectl exec vault-0 -n vault -- vault secrets enable -version=2 -path=secret kv
+  when: kv_check.rc == 1
+
+- name: Set secret with username and password
+  shell: set -o pipefail && kubectl exec vault-0 -n vault -- vault kv put secret/webapp/config username="static-user" password="static-password"
+  changed_when: false
+
+- name: Check if usesrpass is already enabled
   shell: set -o pipefail && kubectl exec vault-0 -n vault -- vault auth list | grep userpass
   register: userpass_check
   ignore_errors: true
@@ -49,6 +63,18 @@
   when: userpass_check.rc == 1
   changed_when: false
 
-- name: Add user to Vault and make admin
-  command: kubectl exec vault-0 -n vault -- vault write auth/userpass/users/{{ user_name }} password={{ user_password }} policies=admins
+- name: Copy policy file to pod with kubectl
+  command: kubectl cp {{ role_path }}/files/{{ policy_path }} vault/vault-0:{{ target_path }}
   changed_when: false
+
+- name: Create policy
+  command: kubectl exec vault-0 -n vault -- vault policy write {{ policy_name }} {{ target_path }}
+  changed_when: false
+
+- name: Add user to Vault, make admin and apply custom policy
+  command: kubectl exec vault-0 -n vault -- vault write auth/userpass/users/{{ user_name }} password={{ user_password }} policies=admin,{{ policy_name }}
+  changed_when: false
+
+- name: Test authentication via username and password
+  ansible.builtin.debug:
+    msg: "{{ lookup('hashi_vault', '{{ secret_user }} auth_method=userpass username={{ user_name }} password={{ user_password }} url={{ vault_host }}') }}"
