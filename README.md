@@ -19,6 +19,9 @@ This repository contains the code to provision Kubernetes on a local Macbook as 
 - https://testdriven.io/blog/running-vault-and-consul-on-kubernetes/
 - https://multipass.run/docs/launch-command
 - https://docs.ansible.com/ansible/latest/collections/community/kubernetes/helm_module.html
+- https://learn.hashicorp.com/tutorials/consul/kubernetes-minikube?in=consul/kubernetes-deploy
+- https://docs.ansible.com/ansible/latest/collections/community/hashi_vault/hashi_vault_lookup.html#ansible-collections-community-hashi-vault-hashi-vault-lookup
+
 
 ## Known issues
 
