@@ -1,0 +1,12 @@
+- name: Add Hashicorp chart repo
+  community.kubernetes.helm_repository:
+    name: hashicorp
+    repo_url: "https://helm.releases.hashicorp.com"
+
+- name: Deploy Consul chart
+  community.kubernetes.helm:
+    name: consul
+    chart_ref: hashicorp/consul
+    create_namespace: true
+    release_namespace: consul
+    values: "{{ lookup('file', '../kubernetes/consul/config.yaml') | from_yaml }}"

@@ -1,3 +1,5 @@
 *tfstate.backup*
 cloud-init.yaml
 kubeconfig
+ansible/cluster-keys.json
+**secrets.json

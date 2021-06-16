@@ -1,0 +1,1 @@
+consul_ingress: "../kubernetes/consul/ingress.yaml"

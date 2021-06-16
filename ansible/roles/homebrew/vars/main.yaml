@@ -1,6 +1,7 @@
 brew_cask_packages:
   - multipass
 brew_packages:
+  - consul
   - helm@3
   - k3sup
   - kubectl

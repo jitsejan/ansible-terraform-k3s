@@ -1,0 +1,12 @@
+config_file: ../kubernetes/vault/config.yaml
+policy_name: jjpolicy
+policy_path: policy.hcl
+secret_user: secret/data/webapp/config:username
+target_path: /home/vault/policy.hcl
+vault_host: http://vault.localhost
+vault_ingress: ../kubernetes/vault/ingress.yaml
+sample_secrets_source_path: secrets-sample.json
+sample_secrets_target_path: /home/vault/secrets-sample.json
+secrets_source_path: secrets.json
+secrets_target_path: /home/vault/secrets.json
+secret_from_json: secret/data/jjsecrets:my-key

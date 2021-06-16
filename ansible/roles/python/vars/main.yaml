@@ -1,0 +1,6 @@
+python_packages:
+  - pip
+  - hvac
+  - "hvac[parser]"
+  - PyYAML==5.4.1
+  - openshift
