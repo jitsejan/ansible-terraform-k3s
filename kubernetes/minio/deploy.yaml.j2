@@ -18,7 +18,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/mnt/minio"
+    path: {{ minio_path }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -62,9 +62,9 @@ spec:
           env:
             # Minio access key and secret key
             - name: MINIO_ACCESS_KEY
-              value: "minio"
+              value: {{ minio_access_key }}
             - name: MINIO_SECRET_KEY
-              value: "minio123"
+              value: {{ minio_secret_key }}
           ports:
             - containerPort: 9000
               hostPort: 9000

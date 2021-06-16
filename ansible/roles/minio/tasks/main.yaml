@@ -1,4 +1,21 @@
-- name: Create the deployment
+- name: Get Minio access key from vault
+  command: echo "{{ lookup('hashi_vault', secret_minio_access_key, auth_method='userpass', username=user_name, password=user_password, url=vault_host) }}"
+  register: minio_access_key_result
+  changed_when: false
+
+- name: Get Minio secret key from vault
+  command: echo "{{ lookup('hashi_vault', secret_minio_secret_key, auth_method='userpass', username=user_name, password=user_password, url=vault_host) }}"
+  register: minio_secret_key_result
+  changed_when: false
+
+- name: Set Minio access and secret key
+  set_fact:
+    minio_access_key: "{{ minio_access_key_result.stdout }}"
+    minio_secret_key: "{{ minio_secret_key_result.stdout }}"
+
+- name: Create the Minio deployment
   community.kubernetes.k8s:
     state: present
-    src: "{{ deployment_file }}"
+    definition: "{{ lookup('template', deployment_file) | from_yaml_all }}"
+    validate:
+      fail_on_error: true
