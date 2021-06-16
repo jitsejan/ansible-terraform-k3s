@@ -10,3 +10,4 @@ sample_secrets_target_path: /home/vault/secrets-sample.json
 secrets_source_path: secrets.json
 secrets_target_path: /home/vault/secrets.json
 secret_from_json: secret/data/jjsecrets:my-key
+kubectl_vault_0: kubectl exec vault-0 -n vault --
