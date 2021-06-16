@@ -15,13 +15,13 @@
       prompt: "Enter a password for the new user"
       private: true
       confirm: true
-      salt_size: 7
   roles:
-    - homebrew
-    - go
-    - multipass
-    - k3s
-    - minio
-    - validate
-    - consul
+    # - homebrew
+    # - python
+    # - go
+    # - multipass
+    # - k3s
+    # - minio
+    # - validate
+    # - consul
     - vault

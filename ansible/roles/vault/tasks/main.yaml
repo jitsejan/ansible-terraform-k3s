@@ -10,7 +10,7 @@
     chart_version: 0.12.0
     create_namespace: true
     release_namespace: vault
-    values: "{{ lookup('file', '../kubernetes/vault/config.yaml') | from_yaml }}"
+    values: "{{ lookup('file', config_file) | from_yaml }}"
 
 - name: Create the ingress
   community.kubernetes.k8s:
@@ -52,7 +52,7 @@
   shell: set -o pipefail && kubectl exec vault-0 -n vault -- vault kv put secret/webapp/config username="static-user" password="static-password"
   changed_when: false
 
-- name: Check if usesrpass is already enabled
+- name: Check if userpass is already enabled
   shell: set -o pipefail && kubectl exec vault-0 -n vault -- vault auth list | grep userpass
   register: userpass_check
   ignore_errors: true
@@ -63,7 +63,7 @@
   when: userpass_check.rc == 1
   changed_when: false
 
-- name: Copy policy file to pod with kubectl
+- name: Copy policy file to pod using kubectl
   command: kubectl cp {{ role_path }}/files/{{ policy_path }} vault/vault-0:{{ target_path }}
   changed_when: false
 
@@ -75,6 +75,24 @@
   command: kubectl exec vault-0 -n vault -- vault write auth/userpass/users/{{ user_name }} password={{ user_password }} policies=admin,{{ policy_name }}
   changed_when: false
 
-- name: Test authentication via username and password
+- name: Test secret retrieval and get username
   ansible.builtin.debug:
-    msg: "{{ lookup('hashi_vault', '{{ secret_user }} auth_method=userpass username={{ user_name }} password={{ user_password }} url={{ vault_host }}') }}"
+    msg: "{{ lookup('hashi_vault', secret_user, auth_method='userpass', username=user_name, password=user_password, url=vault_host) }}"
+
+- name: Copy secret file to pod using kubectl
+  command: kubectl cp {{ secrets_source_path }} vault/vault-0:{{ secrets_target_path }}
+  changed_when: false
+
+- name: Write secrets from a file to vault
+  command: kubectl exec vault-0 -n vault -- vault kv put secret/jjsecrets @{{ secrets_target_path }}
+  changed_when: false
+
+- name: Test secret retrieval from JSON upload and get my-key
+  command: echo "{{ lookup('hashi_vault', secret_from_json, auth_method='userpass', username=user_name, password=user_password, url=vault_host) }}"
+  register: secret_result
+  changed_when: false
+
+- name: Verify that the my-key is indeed sest to has a value from the sample JSON
+  assert:
+    that:
+      - "'has a value' in secret_result.stdout"
