@@ -79,12 +79,12 @@
   ansible.builtin.debug:
     msg: "{{ lookup('hashi_vault', secret_user, auth_method='userpass', username=user_name, password=user_password, url=vault_host) }}"
 
-- name: Copy secret file to pod using kubectl
-  command: kubectl cp {{ secrets_source_path }} vault/vault-0:{{ secrets_target_path }}
+- name: Copy sample secret file to pod using kubectl
+  command: kubectl cp {{ sample_secrets_source_path }} vault/vault-0:{{ sample_secrets_target_path }}
   changed_when: false
 
-- name: Write secrets from a file to vault
-  command: kubectl exec vault-0 -n vault -- vault kv put secret/jjsecrets @{{ secrets_target_path }}
+- name: Write secrets from file to vault
+  command: kubectl exec vault-0 -n vault -- vault kv put secret/jjsecrets @{{ sample_secrets_target_path }}
   changed_when: false
 
 - name: Test secret retrieval from JSON upload and get my-key
@@ -96,3 +96,11 @@
   assert:
     that:
       - "'has a value' in secret_result.stdout"
+
+- name: Copy secret file to pod using kubectl
+  command: kubectl cp {{ secrets_source_path }} vault/vault-0:{{ secrets_target_path }}
+  changed_when: false
+
+- name: Write secrets from file to vault
+  command: kubectl exec vault-0 -n vault -- vault kv put secret/jjsecrets @{{ secrets_target_path }}
+  changed_when: false
