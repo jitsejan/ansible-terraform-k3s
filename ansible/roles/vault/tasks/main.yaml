@@ -18,12 +18,12 @@
     src: "{{ vault_ingress }}"
 
 - name: Check status of init for Vault
-  shell: set -o pipefail && {{ kubectl_vault_0 }}vault operator init -status
+  shell: set -o pipefail && {{ kubectl_vault_0 }} vault operator init -status
   register: init_check
   changed_when: false
 
 - name: Init and get the cluster keys
-  shell: set -o pipefail && {{ kubectl_vault_0 }}vault operator init -key-shares=1 -key-threshold=1 -format=json > cluster-keys.json
+  shell: set -o pipefail && {{ kubectl_vault_0 }} vault operator init -key-shares=1 -key-threshold=1 -format=json > cluster-keys.json
   when: init_check.rc == 2
 
 - name: Unseal the nodes
@@ -35,25 +35,25 @@
   changed_when: false
 
 - name: Authenticate Vault
-  shell: set -o pipefail && {{ kubectl_vault_0 }}vault login $(cat cluster-keys.json | jq -r ".root_token")
+  shell: set -o pipefail && {{ kubectl_vault_0 }} vault login $(cat cluster-keys.json | jq -r ".root_token")
   changed_when: false
 
 - name: Check if kv-v2 is already enabled
-  shell: set -o pipefail && {{ kubectl_vault_0 }}vault secrets list | grep kv
+  shell: set -o pipefail && {{ kubectl_vault_0 }} vault secrets list | grep kv
   register: kv_check
   ignore_errors: true
   changed_when: false
 
 - name: Enable kv-v2 secrets
-  shell: set -o pipefail && {{ kubectl_vault_0 }}vault secrets enable -version=2 -path=secret kv
+  shell: set -o pipefail && {{ kubectl_vault_0 }} vault secrets enable -version=2 -path=secret kv
   when: kv_check.rc == 1
 
 - name: Set secret with username and password
-  shell: set -o pipefail && {{ kubectl_vault_0 }}vault kv put secret/webapp/config username="static-user" password="static-password"
+  shell: set -o pipefail && {{ kubectl_vault_0 }} vault kv put secret/webapp/config username="static-user" password="static-password"
   changed_when: false
 
 - name: Check if userpass is already enabled
-  shell: set -o pipefail && {{ kubectl_vault_0 }}vault auth list | grep userpass
+  shell: set -o pipefail && {{ kubectl_vault_0 }} vault auth list | grep userpass
   register: userpass_check
   ignore_errors: true
   changed_when: false
