@@ -17,7 +17,3 @@
     marker: "# {mark} ANSIBLE MANAGED BLOCK - changes for golang"
     insertafter: EOF
     create: true
-
-- name: Source .zshrc
-  command: . ~/.zshrc
-  changed_when: false

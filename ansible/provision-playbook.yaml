@@ -17,12 +17,12 @@
       private: true
       confirm: true
   roles:
-    # - homebrew
-    # - python
-    # - go
-    # - multipass
-    # - k3s
-    # - consul
-    # - vault
-    # - validate
+    - homebrew
+    - python
+    - go
+    - multipass
+    - k3s
+    - consul
+    - vault
+    - validate
     - minio

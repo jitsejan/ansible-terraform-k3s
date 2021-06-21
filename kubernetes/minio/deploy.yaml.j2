@@ -115,9 +115,10 @@ metadata:
     kubernetes.io/ingress.class: traefik
 spec:
   rules:
-    - http:
+    - host: minio.localhost
+      http:
         paths:
-          - path: /minio
+          - path: /
             pathType: Prefix
             backend:
               service:

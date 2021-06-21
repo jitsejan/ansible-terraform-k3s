@@ -21,6 +21,7 @@
   shell: set -o pipefail && {{ kubectl_vault_0 }} vault operator init -status
   register: init_check
   changed_when: false
+  ignore_errors: true
 
 - name: Init and get the cluster keys
   shell: set -o pipefail && {{ kubectl_vault_0 }} vault operator init -key-shares=1 -key-threshold=1 -format=json > cluster-keys.json
