@@ -1,4 +1,45 @@
-- name: Create the deployment
+- name: Get Minio access key from vault
+  command: echo "{{ lookup('hashi_vault', secret_minio_access_key, auth_method='userpass', username=user_name, password=user_password, url=vault_host) }}"
+  register: minio_access_key_result
+  changed_when: false
+
+- name: Get Minio secret key from vault
+  command: echo "{{ lookup('hashi_vault', secret_minio_secret_key, auth_method='userpass', username=user_name, password=user_password, url=vault_host) }}"
+  register: minio_secret_key_result
+  changed_when: false
+
+- name: Set Minio access and secret key
+  set_fact:
+    minio_access_key: "{{ minio_access_key_result.stdout }}"
+    minio_secret_key: "{{ minio_secret_key_result.stdout }}"
+
+- name: Create the Minio deployment
   community.kubernetes.k8s:
     state: present
-    src: "{{ deployment_file }}"
+    definition: "{{ lookup('template', deployment_file) | from_yaml_all }}"
+    validate:
+      fail_on_error: true
+
+- name: Set Minio Client
+  command: "mc alias set localminio http://192.168.64.9:9000 {{ minio_access_key_result.stdout }} {{ minio_secret_key_result.stdout }}"
+  changed_when: false
+
+- name: Check if the test file is present
+  command: mc ls localminio --recursive
+  register: mc_ls_result
+  changed_when: false
+
+- name: Verify that the test file is present
+  assert:
+    that:
+      - "'testbucket/file.txt' in mc_ls_result.stdout"
+
+- name: Get the content of the test file
+  command: mc cat localminio/testbucket/file.txt
+  register: mc_cat_result
+  changed_when: false
+
+- name: Verify that the test file has the expected content
+  assert:
+    that:
+      - "'Minio test file' == mc_cat_result.stdout"

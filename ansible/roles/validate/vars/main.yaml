@@ -1,5 +1,5 @@
-echo_manifest: "../kubernetes/examples/echo.yaml"
+echo_manifest: ../kubernetes/examples/echo.yaml
 echo_url: "{{ 'http://echo1.localhost' if ansible_distribution == 'MacOSX' else '' }}"
-nginx_manifest: "../kubernetes/examples/nginx.yaml"
-whoami_manifest: "../kubernetes/examples/whoami.yaml"
-whoami_url: "http://jitsejan.localhost/whoami"
+nginx_manifest: ../kubernetes/examples/nginx.yaml
+whoami_manifest: ../kubernetes/examples/whoami.yaml
+whoami_url: http://jitsejan.localhost/whoami

@@ -2,5 +2,6 @@ python_packages:
   - pip
   - hvac
   - "hvac[parser]"
+  - kubernetes-validate
   - PyYAML==5.4.1
   - openshift
