@@ -17,6 +17,15 @@
     state: present
     src: "{{ vault_ingress }}"
 
+- name: "Wait for Vault ingress to come up"
+  uri:
+    url: "{{ vault_url }}"
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 60
+  delay: 2
+
 - name: Check status of init for Vault
   shell: set -o pipefail && {{ kubectl_vault_0 }} vault operator init -status
   register: init_check
