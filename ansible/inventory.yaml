@@ -1,0 +1,8 @@
+targets:
+  hosts:
+    dev:
+      ansible_connection: local
+      ansible_python_interpreter: "/usr/local/Cellar/ansible/3.3.0/libexec/bin/python3.9"
+    prod:
+      ansible_host: dev.jitsejan.com
+      ansible_user: root
