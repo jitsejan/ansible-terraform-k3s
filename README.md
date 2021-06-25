@@ -10,7 +10,16 @@ This repository contains the code to provision Kubernetes on a local Macbook as 
 
 #### Installing Ansible
 
+## Notes
 
+### Installing on VPS
+
+- Need to add public key for root to allow passwordless login
+    ```
+    ❯ ssh-keygen -t rsa -b 4096
+    ❯ ssh-copy-id root@dev.jitsejan.com
+    ```
+    
 ## Sources
 
 - [k3s-ansible](https://github.com/k3s-io/k3s-ansible)
@@ -21,6 +30,7 @@ This repository contains the code to provision Kubernetes on a local Macbook as 
 - https://docs.ansible.com/ansible/latest/collections/community/kubernetes/helm_module.html
 - https://learn.hashicorp.com/tutorials/consul/kubernetes-minikube?in=consul/kubernetes-deploy
 - https://docs.ansible.com/ansible/latest/collections/community/hashi_vault/hashi_vault_lookup.html#ansible-collections-community-hashi-vault-hashi-vault-lookup
+- https://docs.min.io/docs/deploy-minio-on-kubernetes.html
 
 
 ## Known issues

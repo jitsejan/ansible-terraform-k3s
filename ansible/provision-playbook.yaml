@@ -1,6 +1,6 @@
 ---
-- name: Provision Playbook
-  hosts: localhost
+- name: K8s Data Platform
+  hosts: all
   become: false
   vars:
     vault_host: http://vault.localhost
@@ -17,12 +17,16 @@
       private: true
       confirm: true
   roles:
+    - role: homebrew
+      when: ansible_os_family == 'Darwin'
+    - role: ubuntu
+      when: ansible_os_family == 'Debian'
     # - homebrew
     # - python
-    # - go
+    - role: go
     # - multipass
     # - k3s
     # - consul
     # - vault
     # - validate
-    - minio
+    # - minio

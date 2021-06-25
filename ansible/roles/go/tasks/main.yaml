@@ -1,12 +1,12 @@
 ---
-- name: Install Go packages
-  command: "go get -u {{ item }}"
-  args:
-    # Trim trailing '/...'
-    creates: '{{ lookup("env", "GOPATH") }}/src/{{ item | regex_replace("/\.\.\.$", "") }}'
-  with_items: "{{ go.pkgs }}"
-  tags: go-pkg-install
-
+- name: Install and configure Go on Ubuntu
+  block:
+  - name: Install Go snap on Ubuntu
+    snap:
+      name: go
+      state: present
+      classic: true
+  when: ansible_os_family == 'Debian'
 - name: Modify .zshrc with Go variables
   blockinfile:
     dest: "~/.zshrc"
@@ -17,3 +17,12 @@
     marker: "# {mark} ANSIBLE MANAGED BLOCK - changes for golang"
     insertafter: EOF
     create: true
+- name: Install Go packages
+  command: "go mod init"
+  changed_when: false
+# - name: Install Go packages
+#   command: "go get -u {{ item }}"
+#   args:
+#     # Trim trailing '/...'
+#     creates: '{{ lookup("env", "GOPATH") }}/src/{{ item | regex_replace("/\.\.\.$", "") }}'
+#   with_items: "{{ go.pkgs }}"
