@@ -12,7 +12,7 @@
         name: "{{ item.package }}"
         state: present
         classic: true
-        channel: "{{ item.channel }}"
+        channel: "{{ item.channel if 'channel' in item.keys() else None }}"
       with_items: "{{ snap_packages }}"
 
 - name: ZSH facts
@@ -23,3 +23,12 @@
 - name: Make zsh default
   command: chsh -s /bin/zsh
   when: default_shell.stdout.find('/bin/zsh') == -1
+
+- name: Copy cloud-init to machine
+  copy:
+    src: cloud-init.yaml
+    dest: ~/cloud-init.yaml
+    owner: root
+    group: root
+    mode: '0644'
+    backup: true
