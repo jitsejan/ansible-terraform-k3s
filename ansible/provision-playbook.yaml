@@ -21,10 +21,9 @@
       when: ansible_os_family == 'Darwin'
     - role: ubuntu
       when: ansible_os_family == 'Debian'
-    # - homebrew
-    # - python
+    - role: python
     - role: go
-    # - multipass
+    - role: multipass
     # - k3s
     # - consul
     # - vault
