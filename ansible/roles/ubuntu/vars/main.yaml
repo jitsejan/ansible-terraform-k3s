@@ -1,2 +1,6 @@
-packages:
+apt_packages:
+  - build-essential
   - zsh
+snap_packages:
+  - package: go
+    channel: 1.15/stable

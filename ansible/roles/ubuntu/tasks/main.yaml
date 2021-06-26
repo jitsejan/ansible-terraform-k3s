@@ -1,9 +1,19 @@
 ---
-- name: Install packages
+- name: Install apt packages
   apt:
-    name: "{{ packages }}"
+    name: "{{ apt_packages }}"
     state: present
     update_cache: true
+
+- name: Install snap packages
+  block:
+    - name: Install Go snap on Ubuntu
+      snap:
+        name: "{{ item.package }}"
+        state: present
+        classic: true
+        channel: "{{ item.channel }}"
+      with_items: "{{ snap_packages }}"
 
 - name: ZSH facts
   shell: 'echo $SHELL'
