@@ -1,6 +1,6 @@
 ---
 - name: Provision Playbook
-  hosts: localhost
+  hosts: all
   become: false
   vars:
     vault_host: http://vault.localhost
@@ -24,5 +24,6 @@
     # - k3s
     # - consul
     # - vault
-    # - validate
-    - minio
+    - validate
+    # - minio
+    - jupyter
