@@ -50,7 +50,7 @@ spec:
         fsGroup: 0
       containers:
         - name: jupyterlab
-          image: jupyter/all-spark-notebook:latest
+          image: jupyter/minimal-notebook:latest
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
