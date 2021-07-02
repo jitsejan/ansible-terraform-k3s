@@ -6,7 +6,7 @@
     vault_host: http://vault.localhost
     vm_names:
       - mario
-      # - luigi
+      - luigi
   vars_prompt:
     - name: "user_name"
       prompt: "Enter a name for the new user"
@@ -17,13 +17,13 @@
       private: true
       confirm: true
   roles:
-    # - homebrew
-    # - python
-    # - go
-    # - multipass
-    # - k3s
-    # - consul
-    # - vault
+    - homebrew
+    - python
+    - go
+    - multipass
+    - k3s
+    - consul
+    - vault
     - validate
-    # - minio
+    - minio
     - jupyter
