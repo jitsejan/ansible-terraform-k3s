@@ -1,3 +1,4 @@
-init_file: "cloud-init.yaml"
+init_file: cloud-init.yaml
+disk: 10G
 memory: 4G
-ubuntu_version: "ubuntu"
+ubuntu_version: ubuntu

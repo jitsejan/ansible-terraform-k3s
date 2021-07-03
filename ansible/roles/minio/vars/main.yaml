@@ -1,4 +1,5 @@
 deployment_file: ../kubernetes/minio/deploy.yaml.j2
 minio_path: /mnt/minio
+minio_url: http://minio.localhost
 secret_minio_access_key: secret/data/jjsecrets:minio_access_key
 secret_minio_secret_key: secret/data/jjsecrets:minio_secret_key
