@@ -51,7 +51,7 @@ spec:
           ports:
             - containerPort: 8888
           command: ["start-notebook.sh"]
-          args: ["--NotebookApp.token=test"]
+          args: ["--NotebookApp.token={{ user_password }}"]
           volumeMounts:
             - name: jupyter-pv-storage
               mountPath: "/home/jovyan/work"

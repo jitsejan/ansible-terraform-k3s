@@ -1,2 +1,2 @@
 config_file: ../kubernetes/jupyter/config.yaml
-jupyter_manifest: ../kubernetes/jupyter/deploy.yaml
+deployment_file: ../kubernetes/jupyter/deploy.yaml.j2
