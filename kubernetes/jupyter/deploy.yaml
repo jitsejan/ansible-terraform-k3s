@@ -1,4 +1,33 @@
 ---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: jupyter
+  name: jupyter-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/jupyter"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: jupyter
+  name: jupyter-pv-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -22,7 +51,21 @@ spec:
           ports:
             - containerPort: 8888
           command: ["start-notebook.sh"]
-          args: ["--NotebookApp.token='test'"]
+          args: ["--NotebookApp.token=test"]
+          volumeMounts:
+            - name: jupyter-pv-storage
+              mountPath: "/home/jovyan/work"
+      initContainers:
+        - name: jupyter-data-permission-fix
+          image: busybox
+          command: ["/bin/chmod", "-R", "777", "/mnt/jupyter"]
+          volumeMounts:
+            - name: jupyter-pv-storage
+              mountPath: /mnt/jupyter
+      volumes:
+        - name: jupyter-pv-storage
+          persistentVolumeClaim:
+            claimName: jupyter-pv-claim
 ---
 apiVersion: v1
 kind: Service
