@@ -2,7 +2,15 @@
 
 ## Description
 
-This repository contains the code to provision Kubernetes on a local Macbook as well as a Ubuntu VPS through Ansible with the lightweight K3s Kubernetes tool.
+This repository contains the code to provision Kubernetes on a local Macbook (using Multipass) as well as two Ubuntu VPSs through Ansible with the lightweight K3s Kubernetes tool.
+
+## Tools to deploy
+
+- Consul
+- Vault
+- Minio
+- Jupyter
+- Dagster
 
 ## Getting started
 
@@ -21,6 +29,7 @@ This repository contains the code to provision Kubernetes on a local Macbook as 
 - https://docs.ansible.com/ansible/latest/collections/community/kubernetes/helm_module.html
 - https://learn.hashicorp.com/tutorials/consul/kubernetes-minikube?in=consul/kubernetes-deploy
 - https://docs.ansible.com/ansible/latest/collections/community/hashi_vault/hashi_vault_lookup.html#ansible-collections-community-hashi-vault-hashi-vault-lookup
+- https://docs.dagster.io/deployment/guides/kubernetes/deploying-with-helm
 
 
 ## Known issues
