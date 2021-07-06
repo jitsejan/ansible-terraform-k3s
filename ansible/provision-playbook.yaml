@@ -25,6 +25,6 @@
     # - consul
     # - vault
     # - validate
-    # - minio
+    - minio
     # - jupyter
     - dagster

@@ -10,9 +10,14 @@
     chart_version: "{{ chart_version }}"
     create_namespace: true
     release_namespace: "{{ namespace }}"
-    values: "{{ lookup('file', config_file) | from_yaml }}"
+    values: "{{ lookup('template', config_file) | from_yaml }}"
 
 - name: Create the ingress
   community.kubernetes.k8s:
     state: present
     src: "{{ ingress_file }}"
+
+- name: Create the rolebinding
+  community.kubernetes.k8s:
+    state: present
+    src: "{{ rolebinding_file }}"
