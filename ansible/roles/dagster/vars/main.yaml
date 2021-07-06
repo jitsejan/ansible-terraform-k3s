@@ -2,4 +2,6 @@ chart_ref: dagster/dagster
 chart_version: 0.11.16
 config_file: ../kubernetes/dagster/config.yaml
 helm_url: https://dagster-io.github.io/helm
+ingress_file: ../kubernetes/dagster/ingress.yaml
+vault_url: http://vault.localhost/ui
 namespace: dagster
