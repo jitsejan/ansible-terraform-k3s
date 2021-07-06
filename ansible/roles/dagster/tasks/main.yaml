@@ -12,7 +12,7 @@
     release_namespace: "{{ namespace }}"
     values: "{{ lookup('file', config_file) | from_yaml }}"
 
-# - name: Create the ingress
-#   community.kubernetes.k8s:
-#     state: present
-#     src: "{{ vault_ingress }}"
+- name: Create the ingress
+  community.kubernetes.k8s:
+    state: present
+    src: "{{ ingress_file }}"
