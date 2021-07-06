@@ -26,4 +26,5 @@
     # - vault
     # - validate
     # - minio
-    - jupyter
+    # - jupyter
+    - dagster
