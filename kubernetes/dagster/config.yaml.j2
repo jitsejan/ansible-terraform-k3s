@@ -4,11 +4,11 @@ dagster-user-deployments:
     - name: "dagster-user-code"
       image:
         repository: "ghcr.io/jitsejan/dagster-user-code"
-        tag: "0.3"
+        tag: "0.4"
         pullPolicy: Always
       dagsterApiGrpcArgs:
         - "-f"
-        - "/test_project/test_repo/repo.py"
+        - "/test_repo/repos.py"
       port: 3030
       env:
         AWS_ACCESS_KEY_ID: {{ minio_access_key }}
