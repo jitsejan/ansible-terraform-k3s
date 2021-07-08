@@ -1,0 +1,23 @@
+- name: Add Dagster chart repo
+  community.kubernetes.helm_repository:
+    name: dagster
+    repo_url: "{{ helm_url }}"
+
+- name: Deploy Dagster chart
+  community.kubernetes.helm:
+    name: dagster
+    chart_ref: "{{ chart_ref }}"
+    chart_version: "{{ chart_version }}"
+    create_namespace: true
+    release_namespace: "{{ namespace }}"
+    values: "{{ lookup('template', config_file) | from_yaml }}"
+
+- name: Create the ingress
+  community.kubernetes.k8s:
+    state: present
+    src: "{{ ingress_file }}"
+
+- name: Create the rolebinding
+  community.kubernetes.k8s:
+    state: present
+    src: "{{ rolebinding_file }}"

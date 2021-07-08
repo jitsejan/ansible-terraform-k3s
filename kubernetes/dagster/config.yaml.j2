@@ -1,0 +1,26 @@
+dagster-user-deployments:
+  enabled: true
+  deployments:
+    - name: "dagster-user-code"
+      image:
+        repository: "ghcr.io/jitsejan/dagster-user-code"
+        tag: "0.8"
+        pullPolicy: Always
+      dagsterApiGrpcArgs:
+        - "-f"
+        - "/test_repo/repos.py"
+      port: 3030
+      env:
+        AWS_ACCESS_KEY_ID: {{ minio_access_key }}
+        AWS_SECRET_ACCESS_KEY: {{ minio_secret_key }}
+        SOME_RANDOM_VARIABLE = "SomeText"
+rabbitmq:
+  enabled: true
+runLauncher:
+  type: CeleryK8sRunLauncher
+  config:
+    CeleryK8sRunLauncher:
+      jobNamespace: dagster
+dagsterDaemon:
+  queuedRunCoordinator:
+    enabled: true

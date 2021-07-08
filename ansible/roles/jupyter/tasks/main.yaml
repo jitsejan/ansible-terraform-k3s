@@ -1,0 +1,13 @@
+- name: Create the Jupyter namespace
+  community.kubernetes.k8s:
+    name: jupyter
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Create the Jupyter deployment
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', deployment_file) | from_yaml_all }}"
+    validate:
+      fail_on_error: true

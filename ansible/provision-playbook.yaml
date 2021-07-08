@@ -6,7 +6,7 @@
     vault_host: http://vault.localhost
     vm_names:
       - mario
-      # - luigi
+      - luigi
   vars_prompt:
     - name: "user_name"
       prompt: "Enter a name for the new user"
@@ -30,3 +30,5 @@
     - role: vault
     - role: validate
     - role: minio
+    - role: jupyter
+    - role: dagster
