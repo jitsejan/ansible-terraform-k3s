@@ -10,3 +10,4 @@
     create_namespace: true
     release_namespace: consul
     values: "{{ lookup('file', '../kubernetes/consul/config.yaml') | from_yaml }}"
+    kubeconfig: /etc/rancher/k3s/k3s.yaml

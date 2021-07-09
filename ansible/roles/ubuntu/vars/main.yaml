@@ -6,3 +6,5 @@ snap_packages:
   - package: go
     channel: 1.15/stable
   - package: kubectl
+  - package: helm
+    channel: 3.6/stable
