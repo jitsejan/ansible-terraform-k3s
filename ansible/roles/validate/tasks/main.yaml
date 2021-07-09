@@ -1,18 +1,31 @@
 ---
-- name: Create the whoami deployment
-  community.kubernetes.k8s:
-    state: present
-    src: "{{ whoami_manifest }}"
+- name: Deploy validation services
+  block:
+    - name: Create the whoami deployment
+      community.kubernetes.k8s:
+        state: present
+        definition: "{{ lookup('template', whoami_manifest) | from_yaml_all }}"
+        validate:
+          fail_on_error: false
+          strict: true
 
-- name: Create the echo deployment
-  community.kubernetes.k8s:
-    state: present
-    src: "{{ echo_manifest }}"
+    - name: Create the echo deployment
+      community.kubernetes.k8s:
+        state: present
+        definition: "{{ lookup('template', echo_manifest) | from_yaml_all }}"
+        validate:
+          fail_on_error: false
+          strict: true
 
-- name: Create the Nginx deployment
-  community.kubernetes.k8s:
-    state: present
-    src: "{{ nginx_manifest }}"
+    - name: Create the Nginx deployment
+      community.kubernetes.k8s:
+        state: present
+        definition: "{{ lookup('template', nginx_manifest) | from_yaml_all }}"
+        validate:
+          fail_on_error: false
+          strict: true
+
+  delegate_to: 127.0.0.1
 
 - name: "Wait for whoami to come up"
   uri:

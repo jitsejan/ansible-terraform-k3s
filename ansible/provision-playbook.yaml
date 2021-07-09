@@ -29,7 +29,7 @@
     #   when: ansible_os_family == 'Darwin'
     # - role: k3s
     # - role: consul
-    - role: vault
+    # - role: vault
     - role: validate
     - role: minio
     - role: jupyter
