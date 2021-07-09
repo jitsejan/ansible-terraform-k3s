@@ -40,9 +40,10 @@ metadata:
     kubernetes.io/ingress.class: traefik
 spec:
   rules:
-    - http:
+    - host:  "{{ 'http://whoami.localhost' if ansible_distribution == 'MacOSX' else 'whoami.jitsejan.com' }}"
+      http:
         paths:
-          - path: /whoami
+          - path: /
             pathType: Prefix
             backend:
               service:

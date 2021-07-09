@@ -27,15 +27,6 @@
 
   delegate_to: 127.0.0.1
 
-- name: "Wait for whoami to come up"
-  uri:
-    url: "{{ whoami_url }}"
-    status_code: 200
-  register: result
-  until: result.status == 200
-  retries: 60
-  delay: 1
-
 - name: "Wait for echo to come up"
   uri:
     url: "{{ echo_url }}"
@@ -43,4 +34,13 @@
   register: result
   until: "'echo-one' in result.content"
   retries: 10
+  delay: 1
+
+- name: "Wait for whoami to come up"
+  uri:
+    url: "{{ whoami_url }}"
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 60
   delay: 1
