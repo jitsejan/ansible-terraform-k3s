@@ -6,3 +6,4 @@ secret_minio_secret_key: secret/data/jjsecrets:minio_secret_key
 download_link: https://dl.minio.io/client/mc/release/linux-amd64/mc
 bin_path: /usr/local/bin/mc
 permission_mode: 0755
+minio_version: RELEASE.2021-06-17T00-10-46Z
