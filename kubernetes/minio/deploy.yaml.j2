@@ -61,9 +61,9 @@ spec:
             - /data
           env:
             # Minio access key and secret key
-            - name: MINIO_ACCESS_KEY
+            - name: MINIO_ROOT_USER
               value: {{ minio_access_key }}
-            - name: MINIO_SECRET_KEY
+            - name: MINIO_ROOT_PASSWORD
               value: {{ minio_secret_key }}
           ports:
             - containerPort: 9000
@@ -115,7 +115,7 @@ metadata:
     kubernetes.io/ingress.class: traefik
 spec:
   rules:
-    - host: minio.localhost
+    - host: "{{ 'http://minio.localhost' if ansible_distribution == 'MacOSX' else 'minio.jitsejan.com' }}"
       http:
         paths:
           - path: /

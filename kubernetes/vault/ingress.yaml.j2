@@ -8,7 +8,7 @@ metadata:
     kubernetes.io/ingress.class: traefik
 spec:
   rules:
-    - host: "{{ 'http://vault.localhost' if ansible_distribution == 'MacOSX' else 'vault.jitsejan.com' }}"
+    - host: "{{ 'http://vault.localhost' if ansible_distribution == 'MacOSX' else 'secrets.jitsejan.com' }}"
       http:
         paths:
           - path: /
