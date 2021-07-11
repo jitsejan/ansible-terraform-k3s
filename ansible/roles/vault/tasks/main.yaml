@@ -11,11 +11,22 @@
     create_namespace: true
     release_namespace: vault
     values: "{{ lookup('file', config_file) | from_yaml }}"
+    kubeconfig: /etc/rancher/k3s/k3s.yaml
+
+- name: Copy ingress file to machine
+  template:
+    src: "{{ vault_ingress }}"
+    dest: vault_ingress.yaml
+    owner: root
+    group: root
+    mode: '0644'
+    backup: true
 
 - name: Create the ingress
   community.kubernetes.k8s:
     state: present
-    src: "{{ vault_ingress }}"
+    src: vault_ingress.yaml
+    kubeconfig: /etc/rancher/k3s/k3s.yaml
 
 - name: Wait for Vault ingress to come up
   uri:
@@ -26,76 +37,88 @@
   retries: 60
   delay: 2
 
-- name: Check status of init for Vault
-  shell: set -o pipefail && {{ kubectl_vault_0 }} vault operator init -status
-  register: init_check
-  changed_when: false
-  ignore_errors: true
+- name: Initialize Vault
+  block:
+    - name: Check status of init for Vault
+      command: "{{ kubectl_vault_0 }} vault operator init -status"
+      register: init_check
+      changed_when: false
+      ignore_errors: true
 
-- name: Init and get the cluster keys
-  shell: set -o pipefail && {{ kubectl_vault_0 }} vault operator init -key-shares=1 -key-threshold=1 -format=json > cluster-keys.json
-  when: init_check.rc == 2
+    - name: Init and get the cluster keys
+      shell: "{{ kubectl_vault_0 }} vault operator init -key-shares=1 -key-threshold=1 -format=json > cluster-keys.json"
+      when: init_check.rc == 2
 
-- name: Unseal the nodes
-  shell: set -o pipefail && kubectl exec {{ item }} -n vault -- vault operator unseal $(cat cluster-keys.json | jq -r ".unseal_keys_b64[]")
-  with_items:
-    - vault-0
-    - vault-1
-    - vault-2
-  changed_when: false
+    - name: Unseal the nodes
+      shell: kubectl exec {{ item }} -n vault -- vault operator unseal $(cat cluster-keys.json | jq -r ".unseal_keys_b64[]")
+      with_items:
+        - vault-0
+        - vault-1
+        - vault-2
+      changed_when: false
 
-- name: Authenticate Vault
-  shell: set -o pipefail && {{ kubectl_vault_0 }} vault login $(cat cluster-keys.json | jq -r ".root_token")
-  changed_when: false
+    - name: Authenticate Vault
+      shell: "{{ kubectl_vault_0 }} vault login $(cat cluster-keys.json | jq -r '.root_token')"
+      changed_when: false
 
-- name: Check if kv-v2 is already enabled
-  shell: set -o pipefail && {{ kubectl_vault_0 }} vault secrets list | grep kv
-  register: kv_check
-  ignore_errors: true
-  changed_when: false
+    - name: Check if kv-v2 is already enabled
+      shell: "{{ kubectl_vault_0 }} vault secrets list | grep kv"
+      register: kv_check
+      ignore_errors: true
+      changed_when: false
 
-- name: Enable kv-v2 secrets
-  shell: set -o pipefail && {{ kubectl_vault_0 }} vault secrets enable -version=2 -path=secret kv
-  when: kv_check.rc == 1
+    - name: Enable kv-v2 secrets
+      command: "{{ kubectl_vault_0 }} vault secrets enable -version=2 -path=secret kv"
+      when: kv_check.rc == 1
 
-- name: Set secret with username and password
-  shell: set -o pipefail && {{ kubectl_vault_0 }} vault kv put secret/webapp/config username="static-user" password="static-password"
-  changed_when: false
+    - name: Set secret with username and password
+      command: "{{ kubectl_vault_0 }} vault kv put secret/webapp/config username='static-user' password='static-password'"
+      changed_when: false
 
-- name: Check if userpass is already enabled
-  shell: set -o pipefail && {{ kubectl_vault_0 }} vault auth list | grep userpass
-  register: userpass_check
-  ignore_errors: true
-  changed_when: false
+    - name: Check if userpass is already enabled
+      shell: "{{ kubectl_vault_0 }} vault auth list | grep userpass"
+      register: userpass_check
+      ignore_errors: true
+      changed_when: false
 
-- name: Enable userpass login
-  command: "{{ kubectl_vault_0 }} vault auth enable userpass"
-  when: userpass_check.rc == 1
-  changed_when: false
+    - name: Enable userpass login
+      command: "{{ kubectl_vault_0 }} vault auth enable userpass"
+      when: userpass_check.rc == 1
+      changed_when: false
 
-- name: Copy policy file to pod using kubectl
-  command: kubectl cp {{ role_path }}/files/{{ policy_path }} vault/vault-0:{{ target_path }}
-  changed_when: false
+    - name: Copy policy file to pod using kubectl
+      command: kubectl cp {{ role_path }}/files/{{ policy_path }} vault/vault-0:{{ target_path }}
+      changed_when: false
 
-- name: Create policy
-  command: "{{ kubectl_vault_0 }} vault policy write {{ policy_name }} {{ target_path }}"
-  changed_when: false
+    - name: Create policy
+      command: "{{ kubectl_vault_0 }} vault policy write {{ policy_name }} {{ target_path }}"
+      changed_when: false
 
-- name: Add user to Vault, make admin and apply custom policy
-  command: "{{ kubectl_vault_0 }} vault write auth/userpass/users/{{ user_name }} password={{ user_password }} policies=admin,{{ policy_name }}"
-  changed_when: false
+    - name: Add user to Vault, make admin and apply custom policy
+      command: "{{ kubectl_vault_0 }} vault write auth/userpass/users/{{ user_name }} password={{ user_password }} policies=admin,{{ policy_name }}"
+      changed_when: false
+
+    - name: Copy sample secret file to pod using kubectl
+      command: kubectl cp {{ sample_secrets_source_path }} vault/vault-0:{{ sample_secrets_target_path }}
+      changed_when: false
+
+    - name: Write sample secrets from file to vault
+      command: "{{ kubectl_vault_0 }} vault kv put secret/jjsamplesecrets @{{ sample_secrets_target_path }}"
+      changed_when: false
+
+    - name: Copy secret file to pod using kubectl
+      command: kubectl cp {{ secrets_source_path }} vault/vault-0:{{ secrets_target_path }}
+      changed_when: false
+
+    - name: Write secrets from file to vault
+      command: "{{ kubectl_vault_0 }} vault kv put secret/jjsecrets @{{ secrets_target_path }}"
+      changed_when: false
+
+  delegate_to: 127.0.0.1
 
 - name: Test secret retrieval and get username
   ansible.builtin.debug:
     msg: "{{ lookup('hashi_vault', secret_user, auth_method='userpass', username=user_name, password=user_password, url=vault_host) }}"
-
-- name: Copy sample secret file to pod using kubectl
-  command: kubectl cp {{ sample_secrets_source_path }} vault/vault-0:{{ sample_secrets_target_path }}
-  changed_when: false
-
-- name: Write secrets from file to vault
-  command: "{{ kubectl_vault_0 }} vault kv put secret/jjsecrets @{{ sample_secrets_target_path }}"
-  changed_when: false
 
 - name: Test secret retrieval from JSON upload and get my-key
   command: echo "{{ lookup('hashi_vault', secret_from_json, auth_method='userpass', username=user_name, password=user_password, url=vault_host) }}"
@@ -106,11 +129,3 @@
   assert:
     that:
       - "'has a value' in secret_result.stdout"
-
-- name: Copy secret file to pod using kubectl
-  command: kubectl cp {{ secrets_source_path }} vault/vault-0:{{ secrets_target_path }}
-  changed_when: false
-
-- name: Write secrets from file to vault
-  command: "{{ kubectl_vault_0 }} vault kv put secret/jjsecrets @{{ secrets_target_path }}"
-  changed_when: false

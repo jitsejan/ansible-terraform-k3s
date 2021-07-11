@@ -1,9 +1,29 @@
-- name: Install K3s on master
-  command: k3sup install --ip {{ master_ip }} --user {{ username }} --context k3s-context
-  changed_when: false
+- name: Install K3s locally
+  block:
 
-- name: Deploy K3s on the nodes
-  include_tasks: deploy-nodes.yaml
-  loop: "{{ vm_names }}"
-  vars:
-    master: "{{ master_ip }}"
+    - name: Install K3s on master
+      command: k3sup install --ip {{ master_ip }} --user {{ username }} --context k3s-context
+      changed_when: false
+
+    - name: Deploy K3s on the nodes
+      include_tasks: deploy-nodes.yaml
+      loop: "{{ vm_names }}"
+      vars:
+        master: "{{ master_ip }}"
+        username: "{{ username }}"
+
+  when: ansible_os_family == 'Darwin'
+
+- name: Install K3s on remote machines
+  block:
+
+    - name: Install K3s on master
+      command: k3sup install --ip {{ master_vps }} --user {{ username }} --context k3s-prod
+      changed_when: false
+      delegate_to: 127.0.0.1
+
+    - name: Join slave node
+      command: k3sup join --ip {{ slave_vps }} --server-ip {{ master_vps }} --user {{ username }}
+      delegate_to: 127.0.0.1
+
+  when: ansible_os_family == 'Debian'

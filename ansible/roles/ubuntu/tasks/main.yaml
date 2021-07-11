@@ -1,0 +1,84 @@
+---
+- name: Install apt packages
+  apt:
+    name: "{{ apt_packages }}"
+    state: present
+    update_cache: true
+
+- name: Install snap packages
+  block:
+    - name: Install Go snap on Ubuntu
+      snap:
+        name: "{{ item.package }}"
+        state: present
+        classic: true
+        channel: "{{ item.channel if 'channel' in item.keys() else None }}"
+      with_items: "{{ snap_packages }}"
+
+- name: ZSH facts
+  shell: 'echo $SHELL'
+  register: default_shell
+  changed_when: false
+
+- name: Make zsh default
+  command: chsh -s /bin/zsh
+  when: default_shell.stdout.find('/bin/zsh') == -1
+
+- name: Create the Minio testbucket
+  file:
+    path: /mnt/minio/testbucket
+    state: directory
+    mode: '0755'
+
+- name: Copy Minio testfile to machine
+  copy:
+    src: file.txt
+    dest: /mnt/minio/testbucket/
+    mode: '0755'
+
+- name: Check to make sure we have a 'wheel' group
+  group:
+    name: wheel
+    state: present
+
+- name: Allow 'wheel' group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+
+- name: Create the non-root user
+  user:
+    name: "{{ user_name }}"
+    password: "{{ user_password }}"
+    shell: "/bin/bash"
+    groups: "wheel"
+
+- name: Add local public key for key-based SSH authentication
+  authorized_key:
+    user: "{{ user_name }}"
+    key: "{{ item }}"
+  with_file:
+    - ~/.ssh/id_rsa.pub
+
+- name: Restrict root SSH logins
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    state: present
+    regexp: '^#PermitRootLogin'
+    line: 'PermitRootLogin no'
+
+- name: Restrict SSH logins to keys only
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    state: present
+    regexp: '^#PasswordAuthentication'
+    line: 'PasswordAuthentication no'
+
+- name: Restart sshd
+  systemd:
+    state: restarted
+    daemon_reload: true
+    name: sshd

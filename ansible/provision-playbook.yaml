@@ -1,12 +1,14 @@
 ---
-- name: Provision Playbook
+- name: K8s Data Platform
   hosts: all
   become: false
   vars:
-    vault_host: http://vault.localhost
+    vault_host: "{{ 'http://vault.localhost' if ansible_distribution == 'MacOSX' else 'http://secrets.jitsejan.com' }}"
     vm_names:
       - mario
       - luigi
+    master_vps: 63.250.53.137
+    slave_vps: 89.233.107.140
   vars_prompt:
     - name: "user_name"
       prompt: "Enter a name for the new user"
@@ -17,14 +19,18 @@
       private: true
       confirm: true
   roles:
-    - homebrew
-    - python
-    - go
-    - multipass
-    - k3s
-    - consul
-    - vault
-    - validate
-    - minio
-    - jupyter
-    - dagster
+    - role: homebrew
+      when: ansible_os_family == 'Darwin'
+    - role: ubuntu
+      when: ansible_os_family == 'Debian'
+    - role: python
+    - role: go
+    - role: multipass
+      when: ansible_os_family == 'Darwin'
+    - role: k3s
+    - role: consul
+    - role: vault
+    - role: validate
+    - role: minio
+    - role: jupyter
+    - role: dagster

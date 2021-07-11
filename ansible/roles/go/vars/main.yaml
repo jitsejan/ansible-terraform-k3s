@@ -3,3 +3,4 @@ go:
   pkgs:
     - github.com/cloudflare/cfssl/cmd/cfssl
     - github.com/cloudflare/cfssl/cmd/cfssljson
+  version: 1.15.13

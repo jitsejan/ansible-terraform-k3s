@@ -1,12 +1,18 @@
-targets:
+dev:
   hosts:
-    dev:
+    local:
       ansible_connection: local
       ansible_python_interpreter: "/usr/local/Cellar/ansible/3.3.0/libexec/bin/python3.9"
-    prod:
-      # node01:
+prod:
+  hosts:
+    node01:
       ansible_host: node01.jitsejan.com
       ansible_user: root
-      # node02:
-      #   ansible_host: node02.jitsejan.com
-      #   ansible_user: root
+    node02:
+      ansible_host: node02.jitsejan.com
+      ansible_user: root
+master:
+  hosts:
+    node01:
+      ansible_host: echo1.jitsejan.com
+      ansible_user: root

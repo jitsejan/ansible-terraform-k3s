@@ -3,11 +3,11 @@ policy_name: jjpolicy
 policy_path: policy.hcl
 secret_user: secret/data/webapp/config:username
 target_path: /home/vault/policy.hcl
-vault_ingress: ../kubernetes/vault/ingress.yaml
-vault_url: http://vault.localhost/ui
+vault_ingress: ../kubernetes/vault/ingress.yaml.j2
+vault_url: "{{ 'http://secrets.localhost/ui' if ansible_distribution == 'MacOSX' else 'http://secrets.jitsejan.com/ui' }}"
 sample_secrets_source_path: secrets-sample.json
 sample_secrets_target_path: /home/vault/secrets-sample.json
 secrets_source_path: secrets.json
 secrets_target_path: /home/vault/secrets.json
-secret_from_json: secret/data/jjsecrets:my-key
+secret_from_json: secret/data/jjsamplesecrets:my-key
 kubectl_vault_0: kubectl exec vault-0 -n vault --

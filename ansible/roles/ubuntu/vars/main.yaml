@@ -1,0 +1,10 @@
+apt_packages:
+  - build-essential
+  - python3-pip
+  - zsh
+snap_packages:
+  - package: go
+    channel: 1.15/stable
+  - package: kubectl
+  - package: helm
+    channel: 3.6/stable

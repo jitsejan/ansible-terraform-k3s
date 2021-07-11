@@ -5,5 +5,5 @@
   when: item != "mario"
 
 - name: Join cluster
-  command: k3sup join --ip {{ node_ip.stdout }} --server-ip {{ master_ip }} --user jitsejan
+  command: k3sup join --ip {{ node_ip.stdout }} --server-ip {{ master_ip }} --user {{ username }}
   when: item != "mario"

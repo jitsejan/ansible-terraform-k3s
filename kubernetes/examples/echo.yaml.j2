@@ -80,7 +80,7 @@ metadata:
     kubernetes.io/ingress.class: traefik
 spec:
   rules:
-    - host: echo1.localhost
+    - host:  "{{ 'http://echo1.localhost' if ansible_distribution == 'MacOSX' else 'echo1.jitsejan.com' }}"
       http:
         paths:
           - path: "/"
@@ -90,7 +90,7 @@ spec:
                 name: echo-1-service
                 port:
                   name: http
-    - host: echo2.localhost
+    - host:  "{{ 'http://echo2.localhost' if ansible_distribution == 'MacOSX' else 'echo2.jitsejan.com' }}"
       http:
         paths:
           - path: "/"
