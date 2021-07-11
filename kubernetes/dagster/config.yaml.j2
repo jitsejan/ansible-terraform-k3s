@@ -11,8 +11,6 @@ dagster-user-deployments:
         - "/test_repo/repos.py"
       port: 3030
       env:
-        AWS_ACCESS_KEY_ID: {{ minio_access_key }}
-        AWS_SECRET_ACCESS_KEY: {{ minio_secret_key }}
         SOME_RANDOM_VARIABLE: "SomeText"
 rabbitmq:
   enabled: true

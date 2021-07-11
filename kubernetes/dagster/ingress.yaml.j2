@@ -6,6 +6,9 @@ metadata:
   name: dagster-ingress
   annotations:
     kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/auth-type: "basic"
+    traefik.ingress.kubernetes.io/auth-secret: "{{ secret_name }}"
+    traefik.ingress.kubernetes.io/auth-remove-header: "true"
 spec:
   rules:
     - host: "{{ 'http://dagster.localhost' if ansible_distribution == 'MacOSX' else 'dagster.jitsejan.com' }}"

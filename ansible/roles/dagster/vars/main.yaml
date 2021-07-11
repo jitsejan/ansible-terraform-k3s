@@ -5,4 +5,6 @@ helm_url: https://dagster-io.github.io/helm
 ingress_file: ../kubernetes/dagster/ingress.yaml.j2
 vault_url: http://vault.localhost/ui
 namespace: dagster
-rolebinding_file: ../kubernetes/dagster/rolebinding.yaml
+secret_file: ../kubernetes/dagster/secret.yaml.j2
+secret_name: dagstersecret
+traefik_crd_file: ../kubernetes/dagster/traefik_crd.yaml

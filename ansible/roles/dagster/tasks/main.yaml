@@ -13,6 +13,39 @@
     values: "{{ lookup('template', config_file) | from_yaml }}"
     kubeconfig: /etc/rancher/k3s/k3s.yaml
 
+- name: Get encoded user:password pair
+  shell: "set -o pipefail && htpasswd -nb {{ user_name }} {{ user_password }} | openssl base64"
+  register: passwd
+  delegate_to: 127.0.0.1
+  changed_when: false
+
+- name: Set master IP
+  set_fact:
+    passwd: "{{ passwd.stdout }}"
+
+- name: Copy Traefik CRD file to machine
+  template:
+    src: "{{ traefik_crd_file }}"
+    dest: traefik_crd.yaml
+    owner: root
+    group: root
+    mode: '0644'
+    backup: true
+
+- name: Install Traefik CRD
+  community.kubernetes.k8s:
+    state: present
+    src: traefik_crd.yaml
+    kubeconfig: /etc/rancher/k3s/k3s.yaml
+
+- name: Create the Dagster secret
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', secret_file) | from_yaml_all }}"
+    validate:
+      fail_on_error: true
+    kubeconfig: /etc/rancher/k3s/k3s.yaml
+
 - name: Copy ingress file to machine
   template:
     src: "{{ ingress_file }}"
