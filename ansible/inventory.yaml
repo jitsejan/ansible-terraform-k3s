@@ -14,5 +14,5 @@ prod:
 master:
   hosts:
     node01:
-      ansible_host: master.jitsejan.com
+      ansible_host: echo1.jitsejan.com
       ansible_user: root

@@ -24,14 +24,17 @@
   command: chsh -s /bin/zsh
   when: default_shell.stdout.find('/bin/zsh') == -1
 
-- name: Copy cloud-init to machine
+- name: Create the Minio testbucket
+  file:
+    path: /mnt/minio/testbucket
+    state: directory
+    mode: '0755'
+
+- name: Copy Minio testfile to machine
   copy:
-    src: cloud-init.yaml
-    dest: ~/cloud-init.yaml
-    owner: root
-    group: root
-    mode: '0644'
-    backup: true
+    src: file.txt
+    dest: /mnt/minio/testbucket/
+    mode: '0755'
 
 - name: Check to make sure we have a 'wheel' group
   group:
