@@ -8,7 +8,7 @@ metadata:
     kubernetes.io/ingress.class: traefik
 spec:
   rules:
-    - host: dagster.localhost
+    - host: "{{ 'http://dagster.localhost' if ansible_distribution == 'MacOSX' else 'dagster.jitsejan.com' }}"
       http:
         paths:
           - path: /

@@ -6,13 +6,13 @@ dev:
 prod:
   hosts:
     node01:
-      ansible_host: node01.jitsejan.com
+      ansible_host: 63.250.53.137
       ansible_user: root
     node02:
-      ansible_host: node02.jitsejan.com
+      ansible_host: 89.233.107.140
       ansible_user: root
 master:
   hosts:
     node01:
-      ansible_host: echo1.jitsejan.com
+      ansible_host: 63.250.53.137
       ansible_user: root

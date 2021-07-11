@@ -11,13 +11,19 @@
     create_namespace: true
     release_namespace: "{{ namespace }}"
     values: "{{ lookup('template', config_file) | from_yaml }}"
+    kubeconfig: /etc/rancher/k3s/k3s.yaml
+
+- name: Copy ingress file to machine
+  template:
+    src: "{{ ingress_file }}"
+    dest: dagser_ingress.yaml
+    owner: root
+    group: root
+    mode: '0644'
+    backup: true
 
 - name: Create the ingress
   community.kubernetes.k8s:
     state: present
-    src: "{{ ingress_file }}"
-
-- name: Create the rolebinding
-  community.kubernetes.k8s:
-    state: present
-    src: "{{ rolebinding_file }}"
+    src: dagser_ingress.yaml
+    kubeconfig: /etc/rancher/k3s/k3s.yaml

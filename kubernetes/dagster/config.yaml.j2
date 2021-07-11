@@ -13,7 +13,7 @@ dagster-user-deployments:
       env:
         AWS_ACCESS_KEY_ID: {{ minio_access_key }}
         AWS_SECRET_ACCESS_KEY: {{ minio_secret_key }}
-        SOME_RANDOM_VARIABLE = "SomeText"
+        SOME_RANDOM_VARIABLE: "SomeText"
 rabbitmq:
   enabled: true
 runLauncher:
