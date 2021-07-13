@@ -13,3 +13,9 @@
     validate:
       fail_on_error: true
     kubeconfig: /etc/rancher/k3s/k3s.yaml
+
+- name: Create the Jupyter notebooks directory
+  file:
+    path: /mnt/minio/notebooks
+    state: directory
+    mode: '0755'
