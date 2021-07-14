@@ -1,0 +1,9 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dagster-pipeline-env
+  namespace: "{{ namespace }}"
+data:
+  vault_user: "{{ user_name }}"
+  vault_pass: "{{ user_password }}"
