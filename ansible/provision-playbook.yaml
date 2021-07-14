@@ -3,7 +3,7 @@
   hosts: all
   become: false
   vars:
-    vault_host: "{{ 'http://vault.localhost' if ansible_distribution == 'MacOSX' else 'http://secrets.jitsejan.com' }}"
+    vault_host: "{{ 'http://vault.localhost' if ansible_distribution == 'MacOSX' else 'http://vault.jitsejan.com' }}"
     vm_names:
       - mario
       - luigi
