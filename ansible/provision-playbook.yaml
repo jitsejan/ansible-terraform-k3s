@@ -9,17 +9,15 @@
       - luigi
     master_vps: 63.250.53.137
     slave_vps: 89.233.107.140
-    user_name: jitsejan
-    user_password: aapje
-  # vars_prompt:
-  #   - name: "user_name"
-  #     prompt: "Enter a name for the new user"
-  #     private: false
-  #     confirm: false
-  #   - name: "user_password"
-  #     prompt: "Enter a password for the new user"
-  #     private: true
-  #     confirm: true
+  vars_prompt:
+    - name: "user_name"
+      prompt: "Enter a name for the new user"
+      private: false
+      confirm: false
+    - name: "user_password"
+      prompt: "Enter a password for the new user"
+      private: true
+      confirm: true
   roles:
     # - role: homebrew
     #   when: ansible_os_family == 'Darwin'
@@ -33,6 +31,6 @@
     # - role: consul
     # - role: vault
     # - role: validate
-    # - role: minio
-    # - role: jupyter
-    - role: dagster
+    - role: minio
+    - role: jupyter
+    # - role: dagster
