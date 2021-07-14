@@ -4,7 +4,7 @@ policy_path: policy.hcl
 secret_user: secret/data/webapp/config:username
 target_path: /home/vault/policy.hcl
 vault_ingress: ../kubernetes/vault/ingress.yaml.j2
-vault_url: "{{ 'http://secrets.localhost/ui' if ansible_distribution == 'MacOSX' else 'http://secrets.jitsejan.com/ui' }}"
+vault_url: "{{ 'vault.localhost' if ansible_distribution == 'MacOSX' else 'vault.jitsejan.com' }}"
 sample_secrets_source_path: secrets-sample.json
 sample_secrets_target_path: /home/vault/secrets-sample.json
 secrets_source_path: secrets.json
