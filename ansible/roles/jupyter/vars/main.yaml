@@ -1,2 +1,3 @@
 config_file: ../kubernetes/jupyter/config.yaml
 deployment_file: ../kubernetes/jupyter/deploy.yaml.j2
+jupyter_url: "{{ 'http://jupyter.localhost' if ansible_distribution == 'MacOSX' else 'jupyter.jitsejan.com' }}"

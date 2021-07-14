@@ -1,33 +1,3 @@
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  namespace: jupyter
-  name: jupyter-pv-volume
-  labels:
-    type: local
-spec:
-  storageClassName: manual
-  capacity:
-    storage: 5Gi
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: "/mnt/jupyter"
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  namespace: jupyter
-  name: jupyter-pv-claim
-spec:
-  storageClassName: manual
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -46,26 +16,18 @@ spec:
         app: jupyter-notebook
     spec:
       containers:
-        - name: minimal-notebook
-          image: jupyter/minimal-notebook:latest
-          ports:
-            - containerPort: 8888
-          command: ["start-notebook.sh"]
-          args: ["--NotebookApp.token={{ user_password }}"]
-          volumeMounts:
-            - name: jupyter-pv-storage
-              mountPath: "/home/jovyan/work"
-      initContainers:
-        - name: jupyter-data-permission-fix
-          image: busybox
-          command: ["/bin/chmod", "-R", "777", "/mnt/jupyter"]
-          volumeMounts:
-            - name: jupyter-pv-storage
-              mountPath: /mnt/jupyter
-      volumes:
-        - name: jupyter-pv-storage
-          persistentVolumeClaim:
-            claimName: jupyter-pv-claim
+      - name: minimal-notebook
+        image: ghcr.io/jitsejan/minimal-notebook:0.14
+        ports:
+        - containerPort: 8888
+        env:
+          # Minio access key and secret key
+          - name: MINIO_ACCESS_KEY
+            value: {{ minio_access_key }}
+          - name: MINIO_SECRET_KEY
+            value: {{ minio_secret_key }}
+          - name: MINIO_URL
+            value: {{ minio_url }}
 ---
 apiVersion: v1
 kind: Service
@@ -89,7 +51,7 @@ metadata:
     kubernetes.io/ingress.class: traefik
 spec:
   rules:
-    - host: jupyter.localhost
+    - host: "{{ jupyter_url }}"
       http:
         paths:
           - path: /
