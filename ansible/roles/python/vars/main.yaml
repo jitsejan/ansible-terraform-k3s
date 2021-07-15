@@ -5,3 +5,4 @@ python_packages:
   - kubernetes-validate
   - PyYAML==5.4.1
   - openshift
+  - dagster

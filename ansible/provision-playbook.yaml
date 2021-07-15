@@ -3,7 +3,8 @@
   hosts: all
   become: false
   vars:
-    vault_host: "{{ 'http://vault.localhost' if ansible_distribution == 'MacOSX' else 'http://vault.jitsejan.com' }}"
+    kubeconfig: /etc/rancher/k3s/k3s.yaml
+    vault_url: "{{ 'http://vault.localhost' if ansible_distribution == 'MacOSX' else 'vault.jitsejan.com' }}"
     vm_names:
       - mario
       - luigi
@@ -19,18 +20,18 @@
       private: true
       confirm: true
   roles:
-    # - role: homebrew
-    #   when: ansible_os_family == 'Darwin'
-    # - role: ubuntu
-    #   when: ansible_os_family == 'Debian'
-    # - role: python
+    - role: homebrew
+      when: ansible_os_family == 'Darwin'
+    - role: ubuntu
+      when: ansible_os_family == 'Debian'
+    - role: python
     # - role: go
     # - role: multipass
     #   when: ansible_os_family == 'Darwin'
     # - role: k3s
     # - role: consul
-    # - role: vault
+    - role: vault
     # - role: validate
-    - role: minio
-    - role: jupyter
-    # - role: dagster
+    # - role: minio
+    # - role: jupyter
+    - role: dagster
