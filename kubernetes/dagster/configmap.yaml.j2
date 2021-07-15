@@ -5,5 +5,5 @@ metadata:
   name: dagster-pipeline-env
   namespace: "{{ namespace }}"
 data:
-  vault_user: "{{ user_name }}"
-  vault_pass: "{{ user_password }}"
+  VAULT_TOKEN: "{{ vault_token }}"
+  VAULT_URL: "{{ vault_host }}"

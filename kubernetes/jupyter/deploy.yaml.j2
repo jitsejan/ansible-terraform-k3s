@@ -21,13 +21,10 @@ spec:
         ports:
         - containerPort: 8888
         env:
-          # Minio access key and secret key
-          - name: MINIO_ACCESS_KEY
-            value: {{ minio_access_key }}
-          - name: MINIO_SECRET_KEY
-            value: {{ minio_secret_key }}
-          - name: MINIO_URL
-            value: {{ minio_url }}
+          - name: VAULT_TOKEN
+            value: {{ vault_token }}
+          - name: VAULT_URL
+            value: {{ vault_host }}
 ---
 apiVersion: v1
 kind: Service
