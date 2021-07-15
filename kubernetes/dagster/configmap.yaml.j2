@@ -1,0 +1,9 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dagster-pipeline-env
+  namespace: "{{ namespace }}"
+data:
+  VAULT_TOKEN: "{{ vault_token }}"
+  VAULT_URL: "{{ vault_host }}"

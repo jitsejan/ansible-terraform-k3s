@@ -94,6 +94,15 @@
       command: "{{ kubectl_vault_0 }} vault policy write {{ policy_name }} {{ target_path }}"
       changed_when: false
 
+    - name: Add token to Vault, attach admin and custom policy
+      command: "{{ kubectl_vault_0 }} vault token create -policy=admin -policy={{ policy_name }} -format=json"
+      register: vault_token_result
+      changed_when: false
+
+    - name: Set Vault token
+      set_fact:
+        vault_token: "{{ vault_token_result.stdout | from_json | json_query('auth.client_token') }}"
+
     - name: Add user to Vault, make admin and apply custom policy
       command: "{{ kubectl_vault_0 }} vault write auth/userpass/users/{{ user_name }} password={{ user_password }} policies=admin,{{ policy_name }}"
       changed_when: false
@@ -116,11 +125,11 @@
 
   delegate_to: 127.0.0.1
 
-- name: Test secret retrieval and get username
+- name: Test secret retrieval and get username with token
   ansible.builtin.debug:
-    msg: "{{ lookup('hashi_vault', secret_user, auth_method='userpass', username=user_name, password=user_password, url=vault_host) }}"
+    msg: "{{ lookup('hashi_vault', secret_user, token=vault_token, url=vault_host) }}"
 
-- name: Test secret retrieval from JSON upload and get my-key
+- name: Test secret retrieval from JSON upload and get my-key with user/pass
   command: echo "{{ lookup('hashi_vault', secret_from_json, auth_method='userpass', username=user_name, password=user_password, url=vault_host) }}"
   register: secret_result
   changed_when: false
