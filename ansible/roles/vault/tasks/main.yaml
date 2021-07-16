@@ -11,7 +11,7 @@
     create_namespace: true
     release_namespace: vault
     values: "{{ lookup('file', config_file) | from_yaml }}"
-    kubeconfig: /etc/rancher/k3s/k3s.yaml
+    kubeconfig: "{{ kubeconfig }}"
 
 - name: Copy ingress file to machine
   template:
@@ -26,7 +26,7 @@
   community.kubernetes.k8s:
     state: present
     src: vault_ingress.yaml
-    kubeconfig: /etc/rancher/k3s/k3s.yaml
+    kubeconfig: "{{ kubeconfig }}"
 
 - name: Wait for Vault ingress to come up
   uri:

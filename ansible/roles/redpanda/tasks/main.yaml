@@ -1,0 +1,27 @@
+- name: Add Redpanda chart repo
+  community.kubernetes.helm_repository:
+    name: redpanda
+    repo_url: "{{ helm_url }}"
+
+- name: Install the Redpanda operator CRD
+  command: kubectl apply -k {{ crd_url }}
+  changed_when: false
+  delegate_to: 127.0.0.1
+
+- name: Deploy Redpanda chart
+  community.kubernetes.helm:
+    name: redpanda
+    chart_ref: "{{ chart_ref }}"
+    chart_version: "{{ chart_version }}"
+    create_namespace: true
+    release_namespace: "{{ namespace }}"
+    kubeconfig: "{{ kubeconfig }}"
+
+- name: Deploy the Redpanda cluster
+  block:
+    - name: Create the Redpanda cluster
+      community.kubernetes.k8s:
+        state: present
+        src: ../kubernetes/redpanda/cluster.yaml
+
+  delegate_to: 127.0.0.1
