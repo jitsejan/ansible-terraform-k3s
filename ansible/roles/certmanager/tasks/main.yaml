@@ -1,0 +1,38 @@
+- name: Add cert-manager chart repo
+  community.kubernetes.helm_repository:
+    name: jetstack
+    repo_url: "{{ helm_url }}"
+
+- name: Deploy cert-manager chart
+  community.kubernetes.helm:
+    name: jetstack
+    chart_ref: "{{ chart_ref }}"
+    chart_version: "{{ chart_version }}"
+    create_namespace: true
+    release_namespace: "{{ namespace }}"
+    values:
+      installCRDs: true
+    kubeconfig: "{{ kubeconfig }}"
+
+- name: Copy test deployment file to machine
+  template:
+    src: "{{ test_resources_deploy_file }}"
+    dest: test.yaml
+    owner: root
+    group: root
+    mode: '0644'
+    backup: true
+
+- name: Create the cert manager test deployment
+  community.kubernetes.k8s:
+    state: present
+    src: test.yaml
+    kubeconfig: "{{ kubeconfig }}"
+
+# Run test
+
+- name: Delete the cert manager test deployment
+  community.kubernetes.k8s:
+    state: absent
+    src: test.yaml
+    kubeconfig: "{{ kubeconfig }}"
