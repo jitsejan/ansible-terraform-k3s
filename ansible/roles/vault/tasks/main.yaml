@@ -11,7 +11,7 @@
     create_namespace: true
     release_namespace: vault
     values: "{{ lookup('file', config_file) | from_yaml }}"
-    kubeconfig: /etc/rancher/k3s/k3s.yaml
+    kubeconfig: "{{ kubeconfig }}"
 
 - name: Copy ingress file to machine
   template:
@@ -26,7 +26,7 @@
   community.kubernetes.k8s:
     state: present
     src: vault_ingress.yaml
-    kubeconfig: /etc/rancher/k3s/k3s.yaml
+    kubeconfig: "{{ kubeconfig }}"
 
 - name: Wait for Vault ingress to come up
   uri:
@@ -115,8 +115,13 @@
       command: "{{ kubectl_vault_0 }} vault kv put secret/jjsamplesecrets @{{ sample_secrets_target_path }}"
       changed_when: false
 
+    - name: Copy secret file to machine
+      template:
+        src: "{{ secrets_source_path }}"
+        dest: deploysecrets.json
+
     - name: Copy secret file to pod using kubectl
-      command: kubectl cp {{ secrets_source_path }} vault/vault-0:{{ secrets_target_path }}
+      command: kubectl cp deploysecrets.json vault/vault-0:{{ secrets_target_path }}
       changed_when: false
 
     - name: Write secrets from file to vault

@@ -3,3 +3,4 @@ cloud-init.yaml
 kubeconfig
 ansible/cluster-keys.json
 **secrets.json
+ansible/secrets.json.j2

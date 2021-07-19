@@ -18,12 +18,12 @@
   block:
 
     - name: Install K3s on master
-      command: k3sup install --ip {{ master_vps }} --user {{ username }} --context k3s-prod
+      command: k3sup install --ip {{ master_vps }} --user {{ username }} --context k3s-prod --k3s-extra-args '--node-external-ip {{ master_vps }}'
       changed_when: false
       delegate_to: 127.0.0.1
 
     - name: Join slave node
-      command: k3sup join --ip {{ slave_vps }} --server-ip {{ master_vps }} --user {{ username }}
+      command: k3sup join --ip {{ slave_vps }} --server-ip {{ master_vps }} --user {{ username }} --k3s-extra-args '--node-external-ip {{ slave_vps }}'
       delegate_to: 127.0.0.1
 
   when: ansible_os_family == 'Debian'

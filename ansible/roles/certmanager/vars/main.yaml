@@ -1,0 +1,5 @@
+chart_ref: jetstack/cert-manager
+chart_version: v1.2.0
+helm_url: https://charts.jetstack.io
+namespace: cert-manager
+test_resources_deploy_file: ../kubernetes/certmanager/test-resources.yaml
