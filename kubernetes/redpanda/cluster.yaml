@@ -5,8 +5,8 @@ metadata:
   name: external-connectivity
   namespace: redpanda
 spec:
-  image: "vectorized/redpanda"
-  version: "latest"
+  image: vectorized/redpanda
+  version: latest
   replicas: 2
   resources:
     requests:
@@ -22,10 +22,12 @@ spec:
       - port: 9092
       - external:
           enabled: true
+          # subdomain: kafka.jitsejan.com
     pandaproxyApi:
       - port: 8082
       - external:
           enabled: true
+          # subdomain: kafka.jitsejan.com
     adminApi:
       - port: 9644
     developerMode: true

@@ -115,8 +115,13 @@
       command: "{{ kubectl_vault_0 }} vault kv put secret/jjsamplesecrets @{{ sample_secrets_target_path }}"
       changed_when: false
 
+    - name: Copy secret file to machine
+      template:
+        src: "{{ secrets_source_path }}"
+        dest: deploysecrets.json
+
     - name: Copy secret file to pod using kubectl
-      command: kubectl cp {{ secrets_source_path }} vault/vault-0:{{ secrets_target_path }}
+      command: kubectl cp deploysecrets.json vault/vault-0:{{ secrets_target_path }}
       changed_when: false
 
     - name: Write secrets from file to vault

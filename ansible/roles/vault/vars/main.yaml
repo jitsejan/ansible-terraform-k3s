@@ -7,7 +7,7 @@ vault_ingress: ../kubernetes/vault/ingress.yaml.j2
 vault_host: "http://{{ vault_url }}"
 sample_secrets_source_path: secrets-sample.json
 sample_secrets_target_path: /home/vault/secrets-sample.json
-secrets_source_path: secrets.json
+secrets_source_path: secrets.json.j2
 secrets_target_path: /home/vault/secrets.json
 secret_from_json: secret/data/jjsamplesecrets:my-key
 kubectl_vault_0: kubectl exec vault-0 -n vault --

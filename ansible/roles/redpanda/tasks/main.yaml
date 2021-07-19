@@ -24,4 +24,13 @@
         state: present
         src: ../kubernetes/redpanda/cluster.yaml
 
+    - name: Retrieve the external addresses for the brokers
+      shell: kubectl get clusters external-connectivity -n redpanda -o=jsonpath='{.status.nodes.external}'  | jq -r 'join(",")'
+      register: brokers_query
+      changed_when: false
+
+    - name: Set brokers
+      set_fact:
+        brokers: "{{ brokers_query.stdout }}"
+
   delegate_to: 127.0.0.1
