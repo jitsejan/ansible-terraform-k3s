@@ -25,7 +25,7 @@ This repository contains the code to provision Kubernetes on a local Macbook (us
 - Need to add public key for root to allow passwordless login
     ```
     ❯ ssh-keygen -t rsa -b 4096
-    ❯ ssh-copy-id root@dev.jitsejan.com
+    ❯ ssh-copy-id root@node01.jitsejan.com
     ```
     
 ## Sources
@@ -45,3 +45,5 @@ This repository contains the code to provision Kubernetes on a local Macbook (us
 ## Known issues
 
 - Be aware that Mac does not support the K3s ingress when using the Docker version. I am using `multipass` to create virtual machines where I can install Kubernetes with `k3s`. Using KinD (Kubernetes In Docker) will stop ingress to work since networking is not allowed.
+
+- After using a new Mac to connect to the VPS I had to make sure to enable `PasswordAuthentication` in `/etc/ssh/sshd_config` by setting it to `yes`. This would fix the issue `jitsejan@node01.jitsejan.com: Permission denied`.
