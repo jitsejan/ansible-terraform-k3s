@@ -1,0 +1,17 @@
+---
+- name: K8s Data Platform
+  hosts: databox
+  become: false
+  vars:
+  vars_prompt:
+    - name: "user_name"
+      prompt: "Enter a name for the new user"
+      private: false
+      confirm: false
+    - name: "user_password"
+      prompt: "Enter a password for the new user"
+      private: true
+      confirm: true
+  roles:
+    - role: ubuntu
+      when: ansible_os_family == 'Debian'

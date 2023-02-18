@@ -14,9 +14,32 @@ This repository contains the code to provision Kubernetes on a local Macbook (us
 
 ## Getting started
 
+### Pre-requisites
+
+1. Redirect: A record to point `databox.jitsejan.com` to the single node VPS's IP address.
+
+
 ### Ansible
 
+```shell
+$ brew install ansible
+$ ansible --version
+ansible [core 2.14.2]
+```
+
 #### Installing Ansible
+
+## Local Python environment
+
+The local Python environment is used to run `pre-commit` when submitting code. I create a virtual environment, install pre-commit and ran the update to make sure I am using the latest versions for the hooks.
+
+```bash
+$ pyenv virtualenv kubernetes-data-platform-env
+$ pyenv activate kubernetes-data-platform-env
+(kubernetes-data-platform-env) $ pip install pre-commit 
+(kubernetes-data-platform-env) $ pre-commit autoupdate 
+```
+
 
 ## Notes
 

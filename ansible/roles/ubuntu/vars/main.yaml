@@ -5,7 +5,8 @@ apt_packages:
   - zsh
 snap_packages:
   - package: go
-    channel: 1.15/stable
+    channel: 1.19.6/stable
   - package: kubectl
+    channel: 1.26.1/stable
   - package: helm
-    channel: 3.6/stable
+    channel: 3.7.0/stable
